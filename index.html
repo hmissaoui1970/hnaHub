@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="ary" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HnaHub Pilot</title>
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HnaHub">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@600;700&display=swap">
+<style>
+/* Layout: one phone column, language + role switch on top, screens swap in place, tab bar per role; Darija runs right to left */
+:root{
+  --bg:#F5F6F3; --card:#FFFFFF; --line:#E2E6E1; --ink:#15241C; --muted:#56635B;
+  --brand:#17694A; --brand-ink:#FFFFFF; --brand-soft:#E3F1EA;
+  --amber:#D98A00; --amber-soft:#FCEBC8; --amber-ink:#6E4300;
+  --violet-soft:#E6E8F7; --violet-ink:#3A3F8F;
+  /* role colors: producer = honey (goods), rokna = green (the shop), livreur = blue (the road) */
+  --rp:#B86E00; --rp-soft:#FCEBC8; --rp-ink:#6E4300; --rr:#17694A; --rr-soft:#E3F1EA; --rr-ink:#17694A; --rd:#2F5BA8; --rd-soft:#E3EAF7; --rd-ink:#24467F; --rv:#6B4FB3; --rv-soft:#EEE9FA; --rv-ink:#4B3590; --on-role:#FFFFFF;
+  --display:"Space Grotesk", "Noto Kufi Arabic", "Segoe UI", system-ui, sans-serif;
+  --body:Inter, "IBM Plex Sans Arabic", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1713; --card:#17221C; --line:#2A3830; --ink:#EAF1EC; --muted:#A3B2A9;
+  --brand:#3FA77A; --brand-ink:#08140E; --brand-soft:#1D3A2C;
+  --amber:#E9A73A; --amber-soft:#3A2C12; --amber-ink:#F6D28F;
+  --violet-soft:#262A4A; --violet-ink:#C3C7F5;
+  --rp:#E9A73A; --rp-soft:#3A2C12; --rp-ink:#F6D28F; --rr:#3FA77A; --rr-soft:#1D3A2C; --rr-ink:#9FD9BC; --rd:#7EA6EC; --rd-soft:#1E2A42; --rd-ink:#BFD2F6; --rv:#B39DF0; --rv-soft:#2A2342; --rv-ink:#D7CCF8; --on-role:#0F1713; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1713; --card:#17221C; --line:#2A3830; --ink:#EAF1EC; --muted:#A3B2A9;
+  --brand:#3FA77A; --brand-ink:#08140E; --brand-soft:#1D3A2C;
+  --amber:#E9A73A; --amber-soft:#3A2C12; --amber-ink:#F6D28F;
+  --violet-soft:#262A4A; --violet-ink:#C3C7F5;
+  --rp:#E9A73A; --rp-soft:#3A2C12; --rp-ink:#F6D28F; --rr:#3FA77A; --rr-soft:#1D3A2C; --rr-ink:#9FD9BC; --rd:#7EA6EC; --rd-soft:#1E2A42; --rd-ink:#BFD2F6; --rv:#B39DF0; --rv-soft:#2A2342; --rv-ink:#D7CCF8; --on-role:#0F1713; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+[dir="rtl"] body{font-size:16px}
+.app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:12px 96px;gap:12px}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.headbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.today{font-size:13px;font-weight:600;color:var(--muted);min-width:0}
+.seg{display:grid;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px}
+.roles{grid-template-columns:repeat(3,minmax(0,1fr));flex:none}
+.langs{flex:0 0 auto;padding:3px!important;border-radius:12px!important}
+.langs{grid-template-columns:repeat(2,auto)}
+.seg button{min-height:40px;border:0;border-radius:10px;background:transparent;font-size:13px;font-weight:600;color:var(--muted);padding:0 10px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.overlay{position:fixed;inset:0;background:rgba(10,20,15,.5);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.sheet{background:var(--card);color:var(--ink);width:100%;max-width:480px;max-height:92%;overflow:auto;border-radius:18px 18px 0 0;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;padding:16px max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px))}
+.sheet input[type=text],.sheet input[type=number]{background:var(--bg)}
+.pickfield{min-height:52px;border:1.5px dashed var(--brand);border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;text-align:start;width:100%}
+.pf-act{color:var(--brand);font-weight:700;font-size:13px;white-space:nowrap}
+.roles{padding:3px;gap:3px;border-radius:12px;background:var(--card)}
+.seg.roles button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:44px;font-size:11.5px;line-height:1.15;border-radius:9px;padding:4px 2px}
+.roles svg{width:16px;height:16px;flex-shrink:0}
+.seg.roles button[data-role="producer"]{background:var(--rp-soft);color:var(--rp-ink)}
+.seg.roles button[data-role="rokna"]{background:var(--rr-soft);color:var(--rr-ink)}
+.seg.roles button[data-role="customer"]{background:var(--rd-soft);color:var(--rd-ink)}
+.seg.roles button[data-role="vendor"]{background:var(--rv-soft);color:var(--rv-ink)}
+.seg.roles button[data-role="vendor"][aria-pressed="true"]{background:var(--rv);color:var(--on-role)}
+body[data-active-role="vendor"] .headbar{border-bottom:3px solid var(--rv)}
+.seg.roles button[data-role="producer"][aria-pressed="true"]{background:var(--rp);color:var(--on-role)}
+.seg.roles button[data-role="rokna"][aria-pressed="true"]{background:var(--rr);color:var(--on-role)}
+.seg.roles button[data-role="customer"][aria-pressed="true"]{background:var(--rd);color:var(--on-role)}
+body[data-active-role="producer"] .headbar{border-bottom:3px solid var(--rp)}
+body[data-active-role="rokna"] .headbar{border-bottom:3px solid var(--rr)}
+body[data-active-role="customer"] .headbar{border-bottom:3px solid var(--rd)}
+.headbar{padding-bottom:6px}
+.langbtn{display:grid;place-items:center;min-height:32px!important;min-width:40px;padding:0 6px!important}
+.seg .langbtn[aria-pressed="true"]{background:var(--brand-soft);outline:2px solid var(--brand);outline-offset:-2px}
+.flag{width:24px;height:16px;border-radius:2px;flex-shrink:0;outline:1px solid var(--line)}
+.lname{display:flex;flex-direction:column;line-height:1.1;text-align:start}
+.lname small{font-size:10px;font-weight:500;opacity:.75}
+.top{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.brand{font-family:var(--display);font-weight:700;font-size:24px;color:var(--brand)}
+.back{width:44px;height:44px;border-radius:22px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;flex-shrink:0}
+[dir="rtl"] .back svg{transform:scaleX(-1)}
+h1{font-family:var(--display);font-size:24px;line-height:1.3;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-size:18px;margin:0}
+.sub{font-size:13px;color:var(--muted)}
+[dir="rtl"] .sub{font-size:14px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.end{text-align:end}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.card.hl{border:2px solid var(--brand)}
+.hero{background:var(--brand);color:var(--brand-ink);border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.hero .k{font-size:13px;opacity:.85}.hero .v{font-family:var(--display);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.btn{min-height:48px;border-radius:24px;border:0;background:var(--brand);color:var(--brand-ink);font-weight:600;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center}
+.btn.ghost{background:transparent;border:1.5px solid var(--brand);color:var(--brand)}
+.btn.plain{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.btn.amber{background:var(--amber);color:#1B1200}
+.btn.small{min-height:44px;font-size:14px}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.5;cursor:default}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--brand)}
+.bar.low i{background:var(--amber)}
+.pill{font-size:12px;font-weight:600;padding:3px 9px;border-radius:10px;white-space:nowrap}
+.p-green{background:var(--brand-soft);color:var(--brand)}
+.p-amber{background:var(--amber-soft);color:var(--amber-ink)}
+.p-violet{background:var(--violet-soft);color:var(--violet-ink)}
+.p-grey{background:var(--line);color:var(--muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--card);font-size:14px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
+label{font-size:13px;font-weight:600}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field .mini{font-size:12px;color:var(--muted);font-weight:500}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--brand);flex-shrink:0;margin:0}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:600}
+.points{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px}
+input[type=text],input[type=number]{height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);padding:0 12px;width:100%;box-sizing:border-box}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.note{font-size:12px;color:var(--muted)}
+[dir="rtl"] .note{font-size:13px}
+.photo{border:2px dashed var(--brand);border-radius:14px;min-height:220px;display:grid;place-items:center;text-align:center;padding:16px;background:var(--card);overflow:hidden}
+.photo img{max-width:100%;max-height:320px;border-radius:10px}
+.stamp{font-size:12px;color:var(--muted)}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);
+  padding:6px max(16px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));display:flex;justify-content:center}
+.tabs nav{display:flex;gap:4px;max-width:480px;width:100%;justify-content:space-around}
+.tabs button{border:0;background:none;min-width:64px;min-height:48px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button[aria-current="page"]{color:var(--brand);font-weight:600}
+.tabs svg{width:22px;height:22px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom, 0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;max-width:calc(100% - 48px)}
+.map{height:150px;border-radius:14px;background:var(--brand-soft);position:relative;overflow:hidden}
+.map svg{width:100%;height:100%}
+.step{display:flex;gap:12px;align-items:flex-start}
+.dot{width:26px;height:26px;border-radius:13px;flex-shrink:0;display:grid;place-items:center;border:2px solid var(--amber);box-sizing:border-box}
+.dot.done{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.num,.ltr{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.ltr{white-space:nowrap}
+.msgs{display:flex;flex-direction:column;gap:8px}
+.bubble{max-width:80%;align-self:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px;display:flex;flex-direction:column;gap:4px;min-width:0;overflow-wrap:anywhere}
+.bubble.mine{align-self:flex-end;background:var(--brand-soft);border-color:transparent}
+.bubble.support{border:1.5px solid var(--amber)}
+.bubble img{border-radius:10px;max-height:220px}
+.bubble .meta{font-size:11px;color:var(--muted)}
+.who{font-size:12px;font-weight:700;color:var(--amber-ink)}
+.sys{align-self:center;font-size:12px;color:var(--muted);background:var(--line);padding:4px 10px;border-radius:10px;text-align:center;max-width:90%}
+.voice{display:flex;align-items:center;gap:8px}
+.wave{display:flex;gap:2px;align-items:center;height:20px}.wave i{width:3px;background:var(--brand);border-radius:2px}
+.composer{display:flex;gap:8px;align-items:center;position:sticky;bottom:0;background:var(--bg);padding-block:8px calc(8px + env(safe-area-inset-bottom, 0px))}
+.composer input[type=text]{flex:1;border-radius:22px;min-width:0}
+.iconbtn{width:44px;height:44px;border-radius:22px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;flex-shrink:0;cursor:pointer}
+.iconbtn.send{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+[dir="rtl"] .iconbtn.send svg,[dir="rtl"] .voice .iconbtn svg{transform:scaleX(-1)}
+@media (prefers-reduced-motion:no-preference){.screen{animation:in .18s ease-out}@keyframes in{from{transform:translateY(6px)}to{transform:none}}}
+</style>
+
+<div class="app">
+  <div class="headbar">
+    <div id="today" class="today"></div>
+    <div class="seg langs" role="group" aria-label="اللغة / Langue">
+      <button type="button" data-lang="ary" lang="ary" class="langbtn" aria-label="الدَّرِيجَة · Darija" title="الدَّرِيجَة · Darija"><svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#C1272D"/><path d="M15 5L17.94 14.05L10.24 8.45H19.76L12.06 14.05Z" fill="none" stroke="#006233" stroke-width="1.3" stroke-linejoin="round"/></svg></button>
+      <button type="button" data-lang="fr" lang="fr" class="langbtn" aria-label="Français" title="Français"><svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="10" height="20" fill="#0055A4"/><rect x="10" width="10" height="20" fill="#FFFFFF"/><rect x="20" width="10" height="20" fill="#EF4135"/></svg></button>
+    </div>
+  </div>
+  <div class="seg roles" role="group" id="rolesGroup">
+    <button type="button" data-role="producer"></button>
+    <button type="button" data-role="rokna"></button>
+    <button type="button" data-role="customer"></button>
+  </div>
+  <main id="view"></main>
+</div>
+<div class="tabs"><nav id="tabs"></nav></div>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+const ICON = {
+  back:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>',
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v11h-6v-7H9v7H3z"/></svg>',
+  box:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  cam:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+  check:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>',
+  route:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8 16l8-8"/></svg>',
+  chat:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+  mic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+  send:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2-6z"/></svg>',
+  play:'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>'
+};
+
+const ROLE_ICON = {
+  producer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v3H8z"/><path d="M7 6h10a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M9 13h6M9 16h4"/></svg>',
+  rokna:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M5 12v8h14v-8"/><path d="M10 20v-5h4v5"/></svg>',
+  vendor:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l9 9-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>',
+  customer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M5 21c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/></svg>'
+};
+const T = {
+  ary:{
+    brand:'HnaHub', back:'رجع', menu:'القائمة', dh:'درهم', km:n=>`${n} كلم`,
+    roles:'شكون نتا؟', r_producer:'الْمُنْتِج', r_rokna:'مُول الگِيشِي', r_vendor:'الْبَائِع', tab_vhome:'السلعة ديالي',
+    v_title:'السلعة ديالك ف HnaHub', v_sub:'كتنشر السلعة ديالك هنا وكتبيعها. ما كتخزّن والو: ملي يتأكد الطلب، كتجيب السلعة لأقرب هَب للكليان، والكليان كياخدها ويخلّصك تما.',
+    v_products:'المنتوجات المعروضة', v_add:'زيد منتوج', v_name:'سمية المنتوج', v_price:'الثمن (درهم)', v_qty:'الكمية', v_photo:'زيد تصويرة', v_save:'نشر المنتوج', v_err:'دخل السمية والثمن.', v_posted:'تنشر المنتوج.',
+    v_inStock:n=>`${n} متوفرين عندك`, v_orders:'الطلبات', v_chooseHub:'ختار أقرب هَب للكليان فيه خدمة التحويل:', v_drop:h=>`جيب السلعة ل${h}`, v_noOrders:'ما كاين حتى طلب دابا.', vendorNamePh:'[سمية البائع]',
+    os_todrop:'كيتسنى البائع يجيب السلعة', r_todrop:'البائع غادي يجيب هاد الطلب', r_gotIt:'توصلت بالسلعة', r_gotToast:'تسجلات السلعة. الكليان توصل بإشعار.',
+    c_catalog:'شنو بغيتي تطلب؟', p_newOrderTitle:'دخل طلب ديال كليان', p_phone:'تيليفون الكليان', p_hub:'أقرب هَب للكليان', p_create:'صيفط اللينك للكليان', p_linkSent:'تصيفط لينك للكليان ف SMS وواتساب.', p_phoneErr:'دخل رقم التيليفون ديال الكليان.',
+    c_linkTitle:'هادي الصفحة اللي كيحلها الكليان من اللينك', c_linkTxt:'ملي المنتج يدخل طلب، الكليان كيوصلو لينك ف SMS ولا واتساب. ما محتاجش يسجّل ولا ينزّل التطبيق. دخل طلب من شاشة المنتج باش تشوفها.', c_fromStock:'موجودة ف هَب قريب', c_fromVendor:'البائع كيجيبها للهَب', c_waitDrop:'مول السلعة غادي يجيبها للهَب. غادي نعلموك ملي توصل.',
+    r_customer:'الْكْلِيَان',
+    tab_home:'الدار', tab_kellef:'زيد هَب', tab_today:'اليوم', tab_orders:'الطلبات',
+    welcome:'مرحبا بيك، حنا هنا قريب منك', inRoknas:n=>`السلعة ديالك ف ${n} هَب`,
+    balance:'الرصيد ديالك', balPh:'[الرصيد]', topup:'شارجي', topupToast:'الشحن غادي يكون ف التطبيق الحقيقي',
+    stockTitle:'السطوك ف كل هَب', pending:'كتسنى التأكيد', pendingNote:'صيفطتي البطاقة. الهَب خاصو يأكد البلاصة والكمية.',
+    restock:'خاص تزيد السلعة', newRokna:'زيد هَب جديد',
+    kellefTitle:'زيد هَب', kellefDesc:'ختار المدينة، من بعد ختار المحل اللي غادي يكون وكيل ديالك تما.', city:'المدينة',
+    lvl_new:'هَب جديد', lvl_good:'هَب مزيان', lvl_gold:'هَب ذهبي',
+    shopInfo:n=>`البلاصة: ${n} قطعة · الخلاص: [الثمن] درهم / طلب`, pick:'ختار هاد الهَب',
+    annexTitle:'بطاقة الملحق', price:'الثمن للكليان (عسل 500 غ)', pricePh:'دخل الثمن',
+    distance:'المسافة', dmin:'أقل مسافة بين هَب وهَب', dmax:'أكبر مسافة بين هَب وهَب', drad:'التوصيل حتى',
+    qty:'الكمية', alert:'نبّهني ملي تبقى', space:'البلاصة اللي خاصة', spaceVal:'1 رف (60 × 40 سم)', conds:'الشروط',
+    cond:['بلاصة ناشفة','بعيد على الشمس','بارد'], noCond:'بلا شروط',
+    annexNote:'ما غاتسيني والو جديد. هاد البطاقة كتتزاد للاتفاقية ديالك ملي الهَب يأكد البلاصة والكمية.',
+    priceErr:'دخل الثمن ديال الكليان باش تصيفط البطاقة.', send:'صيفط للهَب باش يأكد', sentToast:'تصيفطات للهَب. كتسنى التأكيد.',
+    partner:'مول الگيشي · هَب المعاريف', week:'هاد السيمانة', amountPh:'[المبلغ]', newReq:'منتج جديد بغا يخدم معاك', honeyFrom:'عسل مكناس', unit:'قرعة',
+    hasSpace:'كاينة البلاصة', noSpace:'ما كايناش', acceptToast:'تقبل. الملحق ولّى ساري عند المنتج.', declineToast:'ترفض. المنتج غادي يتعلم.',
+    incoming:'وصلات سلعة جديدة', incomingTxt:n=>`${n} قرعة ديال العسل من مكناس. عدّهم وصوّرهم قبل ما تقبل.`, countBtn:'عدّ وصوّر',
+    todayOrders:'الطلبات ديال اليوم', left:n=>`${n} باقين`, honey:'عسل',
+    st_done:'تسلّم', st_pickup:'خوذها من الهَب', st_delivery:'توصيل', note_driver:'الليفرور جاي 15:30', note_pickup:'الكليان غادي يجي', note_done:'التصويرة مقبولة',
+    prepare:'وجّد', done:'تسالا',
+    photoInc:'صوّر السلعة الجديدة', photoOrder:id=>`صوّر <span class="ltr">#${id}</span>`, photoIncSub:n=>`${n} قرعة من مكناس`, photoOrderSub:'التسليم للكليان',
+    shootHint:'صوّر الكولي مع الإتيكيت', shootSub:'الإتيكيت والكود QR خاصهم يبانو', count:'شحال عدّيتي؟', openCam:'حل الكاميرا', confirm:'أكّد',
+    gotToast:n=>`السلعة تقبلات · ${n} قرعة`, missToast:n=>`تسجّل نقص: ${n} قرعة`, handedToast:id=>`#${id} تسلّم`,
+    driverLabel:'الليفرور', order:'الطلب', onWay:'ف الطريق', arrived:'وصل', pickedAt:'خديتو من هَب المعاريف',
+    toCustomer:'وصّل للكليان', sentPhoto:x=>`التصويرة تصيفطات · ${x}`, address:'[عنوان الكليان] · 1.8 كلم',
+    fee:'الخلاص ديالك (خلّصو الكليان)', pricePlace:'[الثمن]', driverNote:'الكليان خلّص من قبل. ما تقبض حتى فلوس. صوّر الكولي عند الباب، والتطبيق غادي يصيفط لينك للكليان باش يأكد.',
+    shootDeliver:'صوّر وسلّم', nextOrder:'الطلب الجاي', deliveredToast:'وصل. تصيفط لينك للكليان باش يأكد.', proofAlt:'تصويرة التسليم',
+    hanout:'حانوت المعاريف', loc:'هَب المعاريف، الدار البيضاء',
+    su_title:'تسجيل المنتج', su_intro:'سجّل مرة وحدة، ومن بعد ختار الهَب اللي بغيتي.', su_steps:['المعلومات ديالك','السلعة ديالك','الاتفاقية'], stepOf:(a,b)=>`المرحلة ${a} من ${b}`,
+    su_name:'السمية ولا سمية الشركة', su_status:'الصفة', statuses:['شخص ذاتي','مقاول ذاتي','تعاونية','شركة'],
+    su_ice:'رقم ICE ولا السجل التجاري (إلا كان)', su_city:'فين كاينة السلعة ديالك؟', su_cityPh:'مثلا: مكناس', su_phone:'رقم التيليفون',
+    next:'التالي', prev:'رجع', su_err1:'دخل السمية ورقم التيليفون باش تكمل.',
+    su_product:'سمية المنتوج', su_productPh:'مثلا: عسل الزعتر', su_cat:'النوع', cats:['عسل','زيت أركان','أملو','زيت الزيتون','مواد التجميل','لبسة','أخرى'],
+    su_size:'التعبئة، الكرتونة والوزن', su_sizePh:'مثلا: 500 غ',
+    pk_title:'التعبئة والكرتونة', pk_open:'اختار', pk_edit:'بدّل', pk_empty:'ما زال ما ختاريتيش التعبئة', pk_close:'سدّ', pk_cancel:'إلغاء', pk_save:'سجّل',
+    pk_container:'نوع القرعة', pk_containers:['قرعة ديال الزاج','قرعة ديال البلاستيك','بوكال ديال الزاج','بوكال ديال البلاستيك','كيس','أخرى'],
+    pk_unit:'الحجم ولا الوزن ديال الوحدة', pk_units:['250 غ','500 غ','1 كلغ','250 مل','500 مل','1 ل'], pk_unitPh:'ولا كتب: 750 غ',
+    pk_perBox:'شحال من وحدة ف الكرتونة', pk_box:'قياس الكرتونة (سم)', pk_L:'الطول', pk_W:'العرض', pk_H:'العلو',
+    pk_weight:'الوزن الكامل ديال الكرتونة (كلغ)', pk_est:x=>`تقدير السلعة بوحدها: ${x} كلغ (بلا الزاج والكرتونة)`, pk_noEst:'دخل الحجم ولا الوزن باش نحسبو التقدير',
+    pk_summary:p=>`${T.ary.pk_containers[p.container]} · ${p.unit} · ${p.perBox} ف الكرتونة · ${p.L}×${p.W}×${p.H} سم · ${p.weight} كلغ`, su_store:'كيفاش خاصو يتخزن؟', su_more:'تقدر تزيد منتوجات أخرى من بعد.', su_err2:'دخل سمية المنتوج.',
+    su_agTitle:'اتفاقية المنتج', su_agPoints:['كتسيني مرة وحدة، وصافي.','كل هَب كتختارو كيتزاد كملحق أوتوماتيكيا، بلا ما تسيني من جديد.','نتا اللي كتحدد الثمن. الكليان كيخلصك ف الهَب بتحويل، ومصاريف التحويل عليه.','الخلاص ديال البلاتفورم والهَب كيتقطع من الرصيد ديالك.','دابا ما كايناش التوصيل للدار: الكليان كياخد السلعة من الهَب.'],
+    su_read:'قرا الاتفاقية كاملة', su_accept:'قريت الاتفاقية وموافق عليها', su_code:'الكود اللي وصلك ف SMS', su_codeSent:n=>`صيفطنا كود ديال 4 أرقام ل ${n}`, su_demo:'(تجربة: دخل أي 4 أرقام)',
+    su_finish:'وافق وكمّل التسجيل', su_err3:'خاصك توافق على الاتفاقية وتدخل الكود ديال 4 أرقام.', su_done:'مبروك! التسجيل تسالا. دابا ختار أول هَب.',
+    msgs:'الرسائل', msgProducer:'راسل المنتج', chatSub:'الشحنة: 50 قرعة ديال العسل', hiddenNum:'النمرة ديالك مخبية، والرسائل كتبقى مسجلة ف التطبيق.',
+    support:'عيّط لفريق HnaHub', supportName:'فريق HnaHub', supportJoined:'فريق HnaHub دخل للمحادثة', supportHello:'السلام، أنا من فريق HnaHub. شنو اللي واقع؟',
+    typePh:'كتب رسالة…', sendMsg:'صيفط', attach:'زيد تصويرة', recAria:'سجّل رسالة صوتية', voice:'رسالة صوتية', recHint:'التسجيل الصوتي غادي يكون ف التطبيق الحقيقي. هادي غير تجربة.', photoAlt:'تصويرة',
+    translated:'مترجم من الفرنسية', waAlert:'تصيفط تنبيه ف واتساب للطرف الآخر', quickTitle:'جواب سريع',
+    q_sentToday:'صيفطت السلعة اليوم', q_recount:'عاود عدّ عافاك', q_photo:'صيفط ليا تصويرة عافاك', q_thanks:'شكرا بزاف',
+    q_short:'وصلات ناقصة', q_broken:'كاين شي حاجة مهرّسة', q_nospace:'ما بقاتش البلاصة', q_more:'صيفط ليا كثر', q_ok:'كلشي مزيان',
+    c_title:'الطلب ديالك', c_areaLbl:'الحومة ديالك:', c_area:'المعاريف، الدار البيضاء', c_product:'عسل مكناس · 500 غ', c_seller:'كيبيعو منتج من مكناس', c_qty:'الكمية', c_order:'طلب',
+    c_howTxt:'ما كتخلص والو دابا. كتمشي للهَب، كتشوف السلعة، ومن بعد كتخلص مول السلعة بتحويل ف نفس الحانوت. مصاريف التحويل عليك.',
+    c_s1:'طلبتي', c_s2:'كنختارو ليك أقرب هَب', c_s3:'السلعة كتسناك ف الهَب', c_s4:'خلّصتي بالتحويل', c_s5:'خديتي السلعة',
+    c_waitProd:'كنتسناو مول السلعة يختار أقرب هَب ليك.', c_proposed:'مول السلعة اقترح عليك هاد الهَب:', c_confirmPlace:'أكّد هاد البلاصة', c_held:h=>`محجوزة ليك ${h} ساعة. إلا ما جيتيش، السلعة كترجع للسطوك.`,
+    c_payInfo:'ف الهَب: شوف السلعة، من بعد دير تحويل ديال المبلغ لمول السلعة. مصاريف التحويل عليك.', c_amount:'المبلغ', c_to:'التحويل باسم', c_paid:ref=>`الخلاص تأكد · رقم التحويل ${ref}`, c_pickNow:'الهَب غادي يسلّمك السلعة دابا.',
+    c_done:'خديتي السلعة. بالصحة!', c_cancel:'ما بقيتش باغيها', c_cancelled:'تلغى الطلب. السلعة رجعات للسطوك.', c_returnNote:'إلا بغيتي ترجع السلعة من بعد، تواصل مع مول السلعة مباشرة.',
+    c_orderedToast:'تصيفط الطلب لمول السلعة.', c_confirmedToast:'تأكدات البلاصة. الهَب توصل بإشعار.', c_open:'مفتوحة',
+    p_newOrders:'طلبات جداد', p_custArea:a=>`الكليان ف ${a}`, p_chooseRokna:'ختار أقرب هَب فيه السطوك وخدمة التحويل:', p_propose:'اقترح', p_proposedToast:'تصيفط الهَب للكليان باش يأكد.', p_noRokna:'ما عندك حتى هَب ف هاد المدينة.', p_ordersStatus:'حالة الطلبات',
+    os_new:'خاصك تختار هَب', os_proposed:'كيتسنى تأكيد الكليان', os_ready:'كيتسنى الكليان ف الهَب', os_paid:'تخلّص · كيتسنى التسليم', os_done:'تسلّم', os_cancelled:'تلغى',
+    r_waitCust:h=>`كيتسنى الكليان · باقي ${h} ساعة`, r_coming:'جاي: كيتسنى تأكيد الكليان', r_paidBtn:'الكليان خلّص', r_handBtn:'سلّم السلعة',
+    r_payTitle:id=>`خلاص الطلب <span class="ltr">#${id}</span>`, r_payNote:'الكليان كيدير تحويل عادي لمول السلعة من عندك، وكيخلص مصاريف التحويل بحال أي واحد. نتا ما كتقبض حتى درهم لحساب مول السلعة.',
+    r_ref:'رقم التحويل (المرجع)', r_refPh:'مثلا: 7731 2290 1145', r_refErr:'دخل رقم التحويل كامل (على الأقل 6 أرقام) قبل ما تأكد.', r_confirmPaid:'أكّد الخلاص', r_paidToast:'تأكد الخلاص. تصيفط تأكيد للكليان ولمول السلعة.',
+    r_refShown:ref=>`رقم التحويل: ${ref}`, r_transfer:'فيها خدمة تحويل الأموال', kellefNote:'غير الحوانت اللي فيهم خدمة تحويل الأموال.', prodNamePh:'[سمية المنتج]'
+  },
+  fr:{
+    brand:'HnaHub', back:'Retour', menu:'Menu', dh:'DH', km:n=>`${n} km`,
+    roles:'Qui êtes-vous ?', r_producer:'Producteur', r_rokna:'Guichetier', r_vendor:'Vendeur', tab_vhome:'Mes produits',
+    v_title:'Vos produits sur HnaHub', v_sub:"Vous publiez et vendez vos produits ici, sans stock en hub. Dès qu'une commande est confirmée, vous déposez l'article au hub le plus proche du client, qui le retire et vous paie sur place.",
+    v_products:'Produits en ligne', v_add:'Ajouter un produit', v_name:'Nom du produit', v_price:'Prix (DH)', v_qty:'Quantité', v_photo:'Ajouter une photo', v_save:'Publier le produit', v_err:'Indiquez le nom et le prix.', v_posted:'Produit publié.',
+    v_inStock:n=>`${n} disponibles chez vous`, v_orders:'Commandes', v_chooseHub:'Choisissez le hub le plus proche du client avec un service de transfert :', v_drop:h=>`Déposez la marchandise au ${h}`, v_noOrders:'Aucune commande pour le moment.', vendorNamePh:'[NOM DU VENDEUR]',
+    os_todrop:'En attente du dépôt vendeur', r_todrop:'Le vendeur va déposer cette commande', r_gotIt:'Marchandise reçue', r_gotToast:'Marchandise enregistrée. Le client est prévenu.',
+    c_catalog:'Que voulez-vous commander ?', p_newOrderTitle:"Saisir la commande d'un client", p_phone:'Téléphone du client', p_hub:'Hub le plus proche du client', p_create:'Envoyer le lien au client', p_linkSent:'Lien envoyé au client par SMS et WhatsApp.', p_phoneErr:'Indiquez le téléphone du client.',
+    c_linkTitle:'Page ouverte par le client depuis le lien', c_linkTxt:"Quand le producteur saisit une commande, le client reçoit un lien par SMS ou WhatsApp, sans inscription ni application. Saisissez une commande côté producteur pour la voir.", c_fromStock:'Déjà en stock dans un hub proche', c_fromVendor:'Le vendeur la dépose au hub', c_waitDrop:'Le vendeur va déposer la commande au hub. Vous serez prévenu à son arrivée.',
+    r_customer:'Client',
+    tab_home:'Accueil', tab_kellef:'Ajouter', tab_today:"Aujourd'hui", tab_orders:'Commandes',
+    welcome:'Bienvenue sur HnaHub, tout près de chez vous', inRoknas:n=>`Vos produits dans ${n} hubs`,
+    balance:'Votre solde', balPh:'[SOLDE]', topup:'Recharger', topupToast:"La recharge sera disponible dans l'app finale",
+    stockTitle:'Stock dans les hubs', pending:'En attente', pendingNote:"Fiche envoyée. Le hub doit confirmer l'espace et la quantité.",
+    restock:'À réapprovisionner', newRokna:'Ajouter un nouveau hub',
+    kellefTitle:'Ajouter un hub', kellefDesc:'Choisissez la ville, puis le commerce qui vous représentera sur place.', city:'Ville',
+    lvl_new:'Nouveau hub', lvl_good:'Hub fiable', lvl_gold:'Hub or',
+    shopInfo:n=>`Espace : ${n} unités · Frais : [PRIX] DH / commande`, pick:'Choisir ce hub',
+    annexTitle:"Fiche d'annexe", price:'Prix client (miel 500 g)', pricePh:'Saisir le prix',
+    distance:'Distance', dmin:'Min. entre hubs', dmax:'Max. entre hubs', drad:'Rayon de livraison',
+    qty:'Quantité', alert:'Alerte à partir de', space:'Espace nécessaire', spaceVal:'1 étagère (60 × 40 cm)', conds:'Conditions',
+    cond:['Endroit sec',"À l'abri du soleil",'Au frais'], noCond:'sans condition',
+    annexNote:"Aucune nouvelle signature. Cette fiche s'ajoute à votre contrat dès que le hub confirme l'espace et la quantité.",
+    priceErr:'Indiquez le prix client pour envoyer la fiche.', send:'Envoyer au hub pour confirmation', sentToast:'Fiche envoyée. En attente de confirmation.',
+    partner:'Guichetier · Hub Maârif', week:'Cette semaine', amountPh:'[MONTANT]', newReq:'Un nouveau producteur veut travailler avec vous', honeyFrom:'Miel de Meknès', unit:'pots',
+    hasSpace:'Espace disponible', noSpace:"Pas d'espace", acceptToast:"Accepté. L'annexe est active chez le producteur.", declineToast:'Refusé. Le producteur sera prévenu.',
+    incoming:'Nouvelle marchandise arrivée', incomingTxt:n=>`${n} pots de miel de Meknès. Comptez-les et photographiez-les avant d'accepter.`, countBtn:'Compter et photographier',
+    todayOrders:'Commandes du jour', left:n=>`${n} restantes`, honey:'miel',
+    st_done:'Remis', st_pickup:'Retrait au hub', st_delivery:'Livraison', note_driver:'Livreur à 15h30', note_pickup:'Le client passera', note_done:'Photo acceptée',
+    prepare:'Préparer', done:'Terminé',
+    photoInc:'Photographier la marchandise', photoOrder:id=>`Photographier #${id}`, photoIncSub:n=>`${n} pots de Meknès`, photoOrderSub:'Remise au client',
+    shootHint:"Photographiez le colis avec l'étiquette", shootSub:"L'étiquette et le QR doivent être visibles", count:'Combien en avez-vous compté ?', openCam:"Ouvrir l'appareil photo", confirm:'Confirmer',
+    gotToast:n=>`Marchandise acceptée · ${n} pots`, missToast:n=>`Manque enregistré : ${n} pots`, handedToast:id=>`#${id} remis`,
+    driverLabel:'Livreur', order:'Commande', onWay:'En route', arrived:'Livré', pickedAt:'Récupéré au Hub Maârif',
+    toCustomer:'Livrer au client', sentPhoto:x=>`Photo envoyée · ${x}`, address:'[ADRESSE DU CLIENT] · 1,8 km',
+    fee:'Vos frais (payés par le client)', pricePlace:'[PRIX]', driverNote:"Le client a déjà payé. N'encaissez aucun argent. Photographiez le colis à la porte, l'app envoie un lien au client pour confirmer.",
+    shootDeliver:'Photographier et remettre', nextOrder:'Commande suivante', deliveredToast:'Livré. Lien envoyé au client pour confirmation.', proofAlt:'Photo de remise',
+    hanout:'Hanout Maârif', loc:'Hub Maârif, Casablanca',
+    su_title:'Inscription producteur', su_intro:'Inscrivez-vous une seule fois, puis choisissez les hubs que vous voulez.', su_steps:['Vos informations','Vos produits','Le contrat'], stepOf:(a,b)=>`Étape ${a} sur ${b}`,
+    su_name:'Nom ou raison sociale', su_status:'Statut', statuses:['Personne physique','Auto-entrepreneur','Coopérative','Société'],
+    su_ice:'ICE ou registre de commerce (si disponible)', su_city:'Où se trouvent vos produits ?', su_cityPh:'ex. : Meknès', su_phone:'Téléphone',
+    next:'Suivant', prev:'Retour', su_err1:'Indiquez votre nom et votre téléphone pour continuer.',
+    su_product:'Nom du produit', su_productPh:'ex. : Miel de thym', su_cat:'Catégorie', cats:['Miel',"Huile d'argan",'Amlou',"Huile d'olive",'Cosmétiques','Vêtements','Autre'],
+    su_size:'Emballage, carton et poids', su_sizePh:'ex. : 500 g',
+    pk_title:'Emballage et carton', pk_open:'Choisir', pk_edit:'Modifier', pk_empty:'Emballage non défini', pk_close:'Fermer', pk_cancel:'Annuler', pk_save:'Enregistrer',
+    pk_container:'Type de contenant', pk_containers:['Bouteille en verre','Bouteille en plastique','Bocal en verre','Pot en plastique','Sachet','Autre'],
+    pk_unit:'Contenance ou poids par unité', pk_units:['250 g','500 g','1 kg','250 ml','500 ml','1 L'], pk_unitPh:'ou saisir : 750 g',
+    pk_perBox:'Unités par carton', pk_box:'Dimensions du carton (cm)', pk_L:'Long.', pk_W:'Larg.', pk_H:'Haut.',
+    pk_weight:'Poids total du carton (kg)', pk_est:x=>`Produit seul : environ ${x} kg (hors verre et carton)`, pk_noEst:'Indiquez la contenance pour calculer une estimation',
+    pk_summary:p=>`${T.fr.pk_containers[p.container]} · ${p.unit} · ${p.perBox} par carton · ${p.L}×${p.W}×${p.H} cm · ${p.weight} kg`, su_store:'Conditions de stockage', su_more:"Vous pourrez ajouter d'autres produits ensuite.", su_err2:'Indiquez le nom du produit.',
+    su_agTitle:'Contrat producteur', su_agPoints:['Vous signez une seule fois.','Chaque hub choisi est ajouté automatiquement en annexe, sans nouvelle signature.',"Vous fixez vos prix. Le client vous paie au hub par transfert d'argent, frais de transfert à sa charge.",'Les frais de la plateforme et des hubs sont prélevés sur votre solde.',"Pas de livraison à domicile pour l'instant : le client retire sa commande au hub."],
+    su_read:'Lire le contrat complet', su_accept:"J'ai lu le contrat et je l'accepte", su_code:'Code reçu par SMS', su_codeSent:n=>`Un code à 4 chiffres a été envoyé au ${n}`, su_demo:'(démo : saisissez 4 chiffres au choix)',
+    su_finish:"Accepter et terminer l'inscription", su_err3:'Acceptez le contrat et saisissez le code à 4 chiffres.', su_done:'Inscription terminée. Choisissez maintenant votre premier hub.',
+    msgs:'Messages', msgProducer:'Écrire au producteur', chatSub:'Envoi : 50 pots de miel', hiddenNum:"Votre numéro reste masqué, et les messages restent enregistrés dans l'app.",
+    support:'Appeler le support', supportName:'Support HnaHub', supportJoined:'Le support HnaHub a rejoint la conversation', supportHello:'Bonjour, ici le support HnaHub. Que se passe-t-il ?',
+    typePh:'Écrire un message…', sendMsg:'Envoyer', attach:'Joindre une photo', recAria:'Enregistrer un message vocal', voice:'Message vocal', recHint:"L'enregistrement vocal sera disponible dans l'app finale. Ceci est une démo.", photoAlt:'Photo',
+    translated:'Traduit de la darija', waAlert:'Alerte WhatsApp envoyée au destinataire', quickTitle:'Réponse rapide',
+    q_sentToday:"J'ai envoyé la marchandise aujourd'hui", q_recount:'Pouvez-vous recompter ?', q_photo:'Envoyez-moi une photo svp', q_thanks:'Merci beaucoup',
+    q_short:'Arrivée incomplète', q_broken:'Un article est cassé', q_nospace:'Plus de place', q_more:'Envoyez plus de stock', q_ok:'Tout est en ordre',
+    c_title:'Votre commande', c_areaLbl:'Votre quartier :', c_area:'Maârif, Casablanca', c_product:'Miel de Meknès · 500 g', c_seller:'Vendu par un producteur de Meknès', c_qty:'Quantité', c_order:'Commander',
+    c_howTxt:"Vous ne payez rien maintenant. Vous allez au hub, vous voyez la marchandise, puis vous payez le vendeur par transfert d'argent dans le même commerce. Les frais de transfert sont à votre charge.",
+    c_s1:'Commande passée', c_s2:'On choisit le hub le plus proche', c_s3:'Votre commande vous attend', c_s4:'Payée par transfert', c_s5:'Commande retirée',
+    c_waitProd:'Le vendeur choisit le hub le plus proche de vous.', c_proposed:'Le vendeur vous propose ce hub :', c_confirmPlace:'Confirmer ce lieu de retrait', c_held:h=>`Réservée pour vous pendant ${h} h. Passé ce délai, elle retourne en stock.`,
+    c_payInfo:"Au hub : vérifiez la marchandise, puis faites un transfert du montant au vendeur. Les frais de transfert sont à votre charge.", c_amount:'Montant', c_to:'Transfert au nom de', c_paid:ref=>`Paiement confirmé · référence ${ref}`, c_pickNow:'Le hub vous remet votre commande maintenant.',
+    c_done:'Commande retirée. Bonne dégustation !', c_cancel:'Je ne la veux plus', c_cancelled:'Commande annulée. La marchandise retourne en stock.', c_returnNote:'Pour un retour après le retrait, contactez directement le vendeur.',
+    c_orderedToast:'Commande envoyée au vendeur.', c_confirmedToast:'Lieu confirmé. Le hub a été prévenu.', c_open:'Ouverte',
+    p_newOrders:'Nouvelles commandes', p_custArea:a=>`Client à ${a}`, p_chooseRokna:'Choisissez le hub le plus proche avec du stock et un service de transfert :', p_propose:'Proposer', p_proposedToast:'Hub proposé au client pour confirmation.', p_noRokna:"Vous n'avez aucun hub dans cette ville.", p_ordersStatus:'Suivi des commandes',
+    os_new:'Hub à choisir', os_proposed:'En attente du client', os_ready:'Attend le client au hub', os_paid:'Payée · à remettre', os_done:'Remise', os_cancelled:'Annulée',
+    r_waitCust:h=>`Attend le client · ${h} h restantes`, r_coming:'À venir : le client doit confirmer', r_paidBtn:'Le client a payé', r_handBtn:'Remettre',
+    r_payTitle:id=>`Paiement de #${id}`, r_payNote:"Le client fait un transfert normal au vendeur depuis votre service, et paie les frais comme n'importe qui. Vous n'encaissez rien pour le vendeur.",
+    r_ref:'Référence du transfert', r_refPh:'ex. : 7731 2290 1145', r_refErr:'Saisissez la référence complète (au moins 6 caractères) avant de confirmer.', r_confirmPaid:'Confirmer le paiement', r_paidToast:'Paiement confirmé. Le client et le vendeur sont prévenus.',
+    r_refShown:ref=>`Référence : ${ref}`, r_transfer:"Service de transfert d'argent", kellefNote:"Seuls les commerces avec un service de transfert d'argent sont proposés.", prodNamePh:'[NOM DU PRODUCTEUR]'
+  }
+};
+let lang='ary';
+try{const s=localStorage.getItem('kellefni-lang');if(s&&T[s])lang=s;}catch(e){}
+const t=()=>T[lang];
+const N=o=>o[lang]; // pick the name in the current language
+
+const CITY={casa:{ary:'الدار البيضاء',fr:'Casablanca'},rabat:{ary:'الرباط',fr:'Rabat'},marrakech:{ary:'مراكش',fr:'Marrakech'},tanger:{ary:'طنجة',fr:'Tanger'}};
+
+// Example data for the pilot (honey from Meknes)
+const S = {
+  city:'casa',
+  roknas:[
+    {id:'maarif',name:{ary:'هَب المعاريف',fr:'Hub Maârif'},city:'casa',stock:32,cap:50,status:'active'},
+    {id:'agdal',name:{ary:'هَب أكدال',fr:'Hub Agdal'},city:'rabat',stock:21,cap:30,status:'active'},
+    {id:'gueliz',name:{ary:'هَب كليز',fr:'Hub Gueliz'},city:'marrakech',stock:4,cap:30,status:'active'}
+  ],
+  shops:{
+    casa:[{id:'hassani',name:{ary:'مكتبة الحي الحسني',fr:'Librairie Hay Hassani'},area:{ary:'الحي الحسني',fr:'Hay Hassani'},hours:'9:00 – 22:00 · 6/7',space:30,level:'new'},
+          {id:'sidimaarouf',name:{ary:'محل التيليفونات سيدي معروف',fr:'Phone Shop Sidi Maârouf'},area:{ary:'سيدي معروف',fr:'Sidi Maârouf'},hours:'10:00 – 22:00 · 7/7',space:100,level:'gold'}],
+    rabat:[{id:'hassan',name:{ary:'حانوت حسان',fr:'Hanout Hassan'},area:{ary:'حسان',fr:'Hassan'},hours:'8:00 – 23:00 · 7/7',space:40,level:'good'}],
+    marrakech:[{id:'daoudiate',name:{ary:'حانوت الداوديات',fr:'Hanout Daoudiate'},area:{ary:'الداوديات',fr:'Daoudiate'},hours:'8:00 – 22:00 · 7/7',space:50,level:'new'}],
+    tanger:[{id:'malabata',name:{ary:'مكتبة ملاباطا',fr:'Librairie Malabata'},area:{ary:'ملاباطا',fr:'Malabata'},hours:'9:00 – 21:00 · 6/7',space:35,level:'new'}]
+  },
+  registered:false,
+  su:{step:1,name:'',status:0,ice:'',city:'',phone:'',product:'',cat:0,size:'',conds:[0,1],agree:false,code:'',pack:{container:0,unit:'',perBox:12,L:'40',W:'30',H:'20',weight:'',set:false}},
+  draftShop:null, request:null,
+  incoming:{qty:50,counted:false},
+  orders:[
+    {id:'K-1048',qty:1,status:'ready',rokna:'maarif',ref:'',heldUntil:Date.now()+28*3.6e6},
+    {id:'K-1039',qty:3,status:'done',rokna:'maarif',ref:'7731 2290 1145'}
+  ],
+  items:[
+    {id:'honey',seller:'producer',name:{ary:'عسل مكناس · 500 غ',fr:'Miel de Meknès · 500 g'},by:{ary:'منتج من مكناس · مخزّن ف الهَب',fr:'Producteur de Meknès · stocké en hub'},price:'',qty:32}
+  ],
+  vPhoto:null,
+  myOrder:null, cQty:1, payFor:null, nextId:1052,
+  photoFor:null,
+  chatFor:null, chatRole:'producer', waSent:{},
+  threads:{maarif:[
+    {from:'system',text:{ary:'تصيفطات شحنة ديال 50 قرعة من مكناس',fr:'Envoi de 50 pots parti de Meknès'},time:'09:10'},
+    {from:'producer',type:'text',orig:'fr',text:{fr:'Bonjour, la marchandise arrive demain matin par CTM.',ary:'السلام، السلعة غادي توصل غدا الصباح مع CTM.'},time:'09:12'},
+    {from:'rokna',type:'text',orig:'ary',text:{ary:'مزيان، غادي نكون ف المحل من 8 ديال الصباح.',fr:'Très bien, je serai au magasin dès 8 h.'},time:'09:30'},
+    {from:'rokna',type:'voice',dur:'12',time:'09:31'}
+  ]}
+};
+const QUICK={producer:['sentToday','recount','photo','thanks'],rokna:['short','broken','nospace','more','ok']};
+const DIST={maarif:1.2,hassani:4.5,sidimaarouf:6.8,agdal:2.0,gueliz:3.1,hassan:2.5,daoudiate:4.0,malabata:3.3};
+const OS_PILL={todrop:'p-violet',new:'p-amber',proposed:'p-violet',ready:'p-amber',paid:'p-green',done:'p-grey',cancelled:'p-grey'};
+const itemOf=o=>S.items.find(i=>i.id===(o.item||'honey'))||S.items[0];
+const itemName=o=>N(itemOf(o).name);
+const sellerOf=o=>itemOf(o).seller;
+const sellerName=o=>sellerOf(o)==='vendor'?t().vendorNamePh:(S.su.name||t().prodNamePh);
+const hubOpts=()=>S.roknas.filter(r=>r.status==='active'&&r.city==='casa').map(r=>({r,d:DIST[r.id]||5})).sort((a,b)=>a.d-b.d);
+const hoursLeft=o=>Math.max(0,Math.ceil(((o.heldUntil||0)-Date.now())/3.6e6));
+function hm(){const d=new Date();const p=n=>String(n).padStart(2,'0');return `${p(d.getHours())}:${p(d.getMinutes())}`;}
+function thread(id){if(!S.threads[id])S.threads[id]=[{from:'system',text:{ary:'المحادثة بدات',fr:'Conversation ouverte'},time:hm()}];return S.threads[id];}
+
+const ROLE_OF={signup:'producer',producer:'producer',kellef:'producer',annex:'producer',rokna:'rokna',photo:'rokna',pay:'rokna',customer:'customer',vendor:'vendor'};
+const TABS={producer:[['producer','tab_home',ICON.home],['kellef','tab_kellef',ICON.plus]],rokna:[['rokna','tab_today',ICON.box]],customer:[['customer','tab_orders',ICON.box]],vendor:[['vendor','tab_vhome',ICON.box]]};
+const LVL={new:['lvl_new','p-grey'],good:['lvl_good','p-green'],gold:['lvl_gold','p-amber']};
+const view=document.getElementById('view');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const go=r=>{if(location.hash!=='#'+r)location.hash=r;else render();};
+let toastTimer;
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,2400);}
+function stamp(){const d=new Date();const p=n=>String(n).padStart(2,'0');return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} · ${p(d.getHours())}:${p(d.getMinutes())}`;}
+function readPhoto(input,cb){const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>cb(r.result);r.readAsDataURL(f);}
+const backBtn=to=>`<button type="button" class="back" aria-label="${t().back}" data-go="${to}">${ICON.back}</button>`;
+
+function prodOrders(){
+  const L=t(),mine=S.orders.filter(o=>sellerOf(o)==='producer'),news=mine.filter(o=>o.status==='new');
+  const newsHtml=news.map(o=>{
+    const opts=S.roknas.filter(r=>r.status==='active'&&r.city==='casa').map(r=>({r,d:DIST[r.id]||5})).sort((a,b)=>a.d-b.d);
+    return `<div class="card hl"><div class="row"><div style="font-weight:700"><span class="ltr">#${o.id}</span> · ${o.qty} × ${esc(itemName(o))}</div><span class="pill p-amber">${L.os_new}</span></div>
+      <div class="sub">${L.p_custArea(L.c_area)}</div><div class="sub">${L.p_chooseRokna}</div>
+      ${opts.length?opts.map(({r,d})=>`<div class="row"><div><div style="font-weight:600">${esc(N(r.name))}</div><div class="sub"><span class="num">${L.km(d)}</span> · ${r.stock} ${L.unit} · ${L.r_transfer}</div></div><button type="button" class="btn small" data-propose="${o.id}|${r.id}">${L.p_propose}</button></div>`).join(''):`<div class="note">${L.p_noRokna}</div>`}</div>`;
+  }).join('');
+  const rest=mine.filter(o=>o.status!=='new');
+  const statusList=rest.map(o=>`<div class="row" style="padding:8px 0;border-top:1px solid var(--line)"><span><span class="ltr">#${o.id}</span> · ${o.qty} × ${esc(itemName(o))}</span><span class="pill ${OS_PILL[o.status]}">${L['os_'+o.status]}</span></div>`).join('');
+  return (news.length?`<h2>${L.p_newOrders}</h2><div class="stack">${newsHtml}</div>`:'')+(rest.length?`<div class="card" style="gap:0"><h2 style="font-size:16px;margin-bottom:6px">${L.p_ordersStatus}</h2>${statusList}</div>`:'');
+}
+
+const AGREEMENT_URL='https://claude.ai/artifact/LNdQKLXyYgYPch524qzrw4';
+const screens={
+  signup(){
+    const L=t(),u=S.su,st=u.step;
+    const bar=`<div class="stack" style="gap:6px"><div class="sub">${L.stepOf(st,3)} · ${L.su_steps[st-1]}</div><div class="grid3" style="gap:6px">${[1,2,3].map(i=>`<div class="bar"><i style="width:${i<=st?100:0}%"></i></div>`).join('')}</div></div>`;
+    let body='';
+    if(st===1) body=`<div class="card">
+      <div class="field"><label for="su_name">${L.su_name}</label><input id="su_name" type="text" value="${esc(u.name)}"></div>
+      <div class="field"><span style="font-size:13px;font-weight:600">${L.su_status}</span><div class="chips" role="group" aria-label="${L.su_status}">${L.statuses.map((s,i)=>`<button type="button" class="chip" data-status="${i}" aria-pressed="${u.status===i}">${s}</button>`).join('')}</div></div>
+      <div class="field"><label for="su_ice">${L.su_ice}</label><input id="su_ice" type="text" inputmode="numeric" dir="ltr" value="${esc(u.ice)}"></div>
+      <div class="field"><label for="su_city">${L.su_city}</label><input id="su_city" type="text" placeholder="${L.su_cityPh}" value="${esc(u.city)}"></div>
+      <div class="field"><label for="su_phone">${L.su_phone}</label><input id="su_phone" type="text" inputmode="tel" dir="ltr" placeholder="06 00 00 00 00" value="${esc(u.phone)}"></div></div>`;
+    if(st===2) body=`<div class="card">
+      <div class="field"><label for="su_product">${L.su_product}</label><input id="su_product" type="text" placeholder="${L.su_productPh}" value="${esc(u.product)}"></div>
+      <div class="field"><span style="font-size:13px;font-weight:600">${L.su_cat}</span><div class="chips" role="group" aria-label="${L.su_cat}">${L.cats.map((c,i)=>`<button type="button" class="chip" data-cat="${i}" aria-pressed="${u.cat===i}">${c}</button>`).join('')}</div></div>
+      <div class="field"><span style="font-size:13px;font-weight:600">${L.su_size}</span><button type="button" class="pickfield" id="openPack" aria-haspopup="dialog"><span class="${u.pack.set?'':'sub'}">${u.pack.set?esc(L.pk_summary(u.pack)):L.pk_empty}</span><span class="pf-act">${u.pack.set?L.pk_edit:L.pk_open}</span></button></div>
+      <div class="field"><span style="font-size:13px;font-weight:600">${L.su_store}</span><div class="chips" role="group" aria-label="${L.su_store}">${L.cond.map((c,i)=>`<button type="button" class="chip" data-sucond="${i}" aria-pressed="${u.conds.includes(i)}">${c}</button>`).join('')}</div></div>
+      <p class="note" style="margin:0">${L.su_more}</p></div>`;
+    if(st===3) body=`<div class="card"><h2>${L.su_agTitle}</h2><ul class="points">${L.su_agPoints.map(p=>`<li>${p}</li>`).join('')}</ul>
+      <a href="${AGREEMENT_URL}" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600;font-size:14px">${L.su_read}</a>
+      <label class="check" for="su_agree"><input id="su_agree" type="checkbox" ${u.agree?'checked':''}><span>${L.su_accept}</span></label></div>
+      <div class="card"><div class="field"><label for="su_code">${L.su_code}</label><input id="su_code" type="text" inputmode="numeric" maxlength="4" dir="ltr" placeholder="• • • •" value="${esc(u.code)}"></div>
+      <div class="note">${L.su_codeSent(`<span class="ltr">${esc(u.phone)}</span>`)} ${L.su_demo}</div></div>`;
+    return `<div class="top"><div class="brand">${L.brand}</div></div>
+      <div class="stack" style="gap:4px"><h1>${L.su_title}</h1><div class="sub" style="font-size:15px">${L.su_intro}</div></div>
+      ${bar}
+      <form id="suForm" class="stack" novalidate>${body}
+        <p id="suErr" class="sub" style="color:var(--amber-ink);margin:0" hidden>${L['su_err'+st]}</p>
+        <div class="row">${st>1?`<button type="button" class="btn plain" id="suPrev">${L.prev}</button>`:''}<button type="submit" class="btn" style="flex:1">${st<3?L.next:L.su_finish}</button></div>
+      </form>`;
+  },
+  chat(){
+    const L=t(),id=S.chatFor; if(!id){location.hash=S.chatRole||'producer';return '';}
+    const me=S.chatRole, th=thread(id), rk=S.roknas.find(x=>x.id===id);
+    const title=me==='producer'?(rk?N(rk.name):''):L.honeyFrom;
+    const supportIn=th.some(m=>m.from==='support');
+    const msgs=th.map(m=>{
+      if(m.from==='system')return `<div class="sys">${esc(N(m.text))} · <span class="ltr">${m.time}</span></div>`;
+      const mine=m.from===me;
+      let content;
+      if(m.type==='voice')content=`<div class="voice"><span class="iconbtn" style="width:32px;height:32px" aria-hidden="true">${ICON.play}</span><span class="wave" aria-hidden="true">${[6,12,9,16,10,14,7,12,8,15,9,6].map(h=>`<i style="height:${h}px"></i>`).join('')}</span><span class="sub">${L.voice} · <span class="ltr">0:${m.dur}</span></span></div>`;
+      else if(m.type==='photo')content=`<img src="${m.photo}" alt="${L.photoAlt}">`;
+      else if(m.type==='quick')content=esc(L['q_'+m.key]);
+      else content=esc(m.text.raw!=null?m.text.raw:N(m.text));
+      const tr=(m.type==='text'&&m.orig&&m.orig!==lang&&m.text.raw==null)?L.translated+' · ':'';
+      const who=m.from==='support'?`<div class="who">${L.supportName}</div>`:'';
+      return `<div class="bubble ${mine?'mine':''} ${m.from==='support'?'support':''}">${who}<div>${content}</div><div class="meta">${tr}<span class="ltr">${m.time}</span></div></div>`;
+    }).join('');
+    return `<div class="top" style="justify-content:flex-start">${backBtn(me==='producer'?'producer':'rokna')}<div style="flex:1;min-width:0"><h1 style="font-size:20px">${esc(title)}</h1><div class="sub">${L.chatSub}</div></div></div>
+      <div class="row" style="gap:8px"><div class="note" style="flex:1">${L.hiddenNum}</div>${supportIn?'':`<button type="button" class="btn plain small" id="supportBtn">${L.support}</button>`}</div>
+      <div class="msgs" aria-live="polite">${msgs}</div>
+      <div class="stack" style="gap:6px"><div class="sub">${L.quickTitle}</div><div class="chips">${QUICK[me].map(k=>`<button type="button" class="chip" data-q="${k}">${L['q_'+k]}</button>`).join('')}</div></div>
+      <form id="chatForm" class="composer" novalidate>
+        <label class="iconbtn" for="chatPhoto" aria-label="${L.attach}">${ICON.cam}</label><input id="chatPhoto" type="file" accept="image/*" hidden>
+        <input id="chatText" type="text" placeholder="${L.typePh}" aria-label="${L.typePh}">
+        <button type="button" class="iconbtn" id="voiceBtn" aria-label="${L.recAria}">${ICON.mic}</button>
+        <button type="submit" class="iconbtn send" aria-label="${L.sendMsg}">${ICON.send}</button>
+      </form>`;
+  },
+  producer(){
+    const L=t();
+    const list=S.roknas.map(r=>{
+      if(r.status==='pending')return `<div class="card"><div class="row"><div><div style="font-weight:600">${esc(N(r.name))}</div><div class="sub">${N(CITY[r.city])}</div></div><span class="pill p-violet">${L.pending}</span></div><div class="note">${L.pendingNote}</div></div>`;
+      const pct=Math.round(r.stock/r.cap*100),low=pct<20;
+      return `<div class="card"><div class="row"><div><div style="font-weight:600">${esc(N(r.name))}</div><div class="sub">${N(CITY[r.city])}</div></div>${low?`<span class="pill p-amber">${L.restock} · <span class="num">${r.stock} / ${r.cap}</span></span>`:`<span class="num" style="font-weight:600">${r.stock} / ${r.cap}</span>`}</div><div class="bar ${low?'low':''}"><i style="width:${pct}%"></i></div><button type="button" class="btn plain small" data-chat="${r.id}">${ICON.chat} ${L.msgs}</button></div>`;
+    }).join('');
+    return `<div class="top"><div class="brand">${L.brand}</div></div>
+      <div class="stack" style="gap:4px"><div class="sub" style="font-size:15px">${L.welcome}</div><h1>${L.inRoknas(S.roknas.filter(r=>r.status==='active').length)}</h1></div>
+      <div class="hero"><div><div class="k">${L.balance}</div><div class="v">${L.balPh} ${L.dh}</div></div><button type="button" class="btn amber small" id="topup">${L.topup}</button></div>
+      <form id="pOrder" class="card" novalidate><h2 style="font-size:16px">${L.p_newOrderTitle}</h2>
+        <div class="grid2"><div class="field"><label for="p_phone">${L.p_phone}</label><input id="p_phone" type="text" inputmode="tel" dir="ltr" placeholder="06 00 00 00 00"></div>
+        <div class="field"><label for="p_qty">${L.c_qty}</label><input id="p_qty" type="number" inputmode="numeric" value="1" min="1" dir="ltr"></div></div>
+        <div class="field"><span style="font-size:13px;font-weight:600">${L.p_hub}</span><div class="chips" role="group" aria-label="${L.p_hub}">${hubOpts().map(({r,d},i)=>`<button type="button" class="chip" data-phub="${r.id}" aria-pressed="${i===0}">${esc(N(r.name))} · <span class="num">${L.km(d)}</span></button>`).join('')}</div></div>
+        <p id="pErr" class="sub" style="color:var(--amber-ink);margin:0" hidden>${L.p_phoneErr}</p>
+        <button type="submit" class="btn block">${L.p_create}</button></form>
+      ${prodOrders()}
+      <h2>${L.stockTitle}</h2>
+      <div class="stack">${list}</div>
+      <button type="button" class="btn ghost block" data-go="kellef">${ICON.plus.replace('<svg','<svg width="18" height="18"')} ${L.newRokna}</button>`;
+  },
+  kellef(){
+    const L=t();
+    const shops=S.shops[S.city].map(s=>`<div class="card"><div class="row" style="align-items:flex-start"><div><div style="font-weight:600">${esc(N(s.name))}</div><div class="sub">${esc(N(s.area))} · <span class="ltr">${s.hours}</span></div></div><span class="pill ${LVL[s.level][1]}">${L[LVL[s.level][0]]}</span></div><div class="sub">${L.shopInfo(s.space)}</div><div><span class="pill p-green">${L.r_transfer}</span></div><button type="button" class="btn small" data-pick="${s.id}">${L.pick}</button></div>`).join('');
+    return `<div class="top" style="justify-content:flex-start">${backBtn('producer')}<h1 style="font-size:22px">${L.kellefTitle}</h1></div>
+      <p class="sub" style="font-size:15px;margin:0">${L.kellefDesc}</p>
+      <p class="note" style="margin:0">${L.kellefNote}</p>
+      <div class="chips" role="group" aria-label="${L.city}">${Object.keys(S.shops).map(c=>`<button type="button" class="chip" data-city="${c}" aria-pressed="${c===S.city}">${N(CITY[c])}</button>`).join('')}</div>
+      <div class="stack">${shops}</div>`;
+  },
+  annex(){
+    const L=t(),s=S.draftShop; if(!s){location.hash='kellef';return '';}
+    return `<div class="top" style="justify-content:flex-start">${backBtn('kellef')}<div><h1 style="font-size:20px">${L.annexTitle}</h1><div class="sub">${esc(N(s.name))} · ${N(CITY[S.city])}</div></div></div>
+      <form id="annexForm" class="stack" novalidate>
+        <div class="card"><div class="field"><label for="price">${L.price}</label><div class="row"><input id="price" type="text" inputmode="decimal" placeholder="${L.pricePh}"><span class="sub">${L.dh}</span></div></div></div>
+        <div class="card"><div style="font-size:13px;font-weight:600">${L.distance}</div><div class="grid2">
+          <div class="field"><label class="mini" for="dmin">${L.dmin}</label><input id="dmin" type="text" value="${L.km(3)}"></div>
+          <div class="field"><label class="mini" for="dmax">${L.dmax}</label><input id="dmax" type="text" value="${L.km(10)}"></div></div></div>
+        <div class="card"><div class="grid2">
+          <div class="field"><label for="qty">${L.qty}</label><input id="qty" type="number" inputmode="numeric" value="50"></div>
+          <div class="field"><label for="alert">${L.alert}</label><input id="alert" type="number" inputmode="numeric" value="10"></div></div></div>
+        <div class="card"><div class="field"><label for="space">${L.space}</label><input id="space" type="text" value="${L.spaceVal}"></div>
+          <div class="chips" role="group" aria-label="${L.conds}">${L.cond.map((c,i)=>`<button type="button" class="chip" data-cond aria-pressed="${i<2}">${c}</button>`).join('')}</div></div>
+        <p class="note" style="margin:0">${L.annexNote}</p>
+        <p id="formErr" class="sub" style="color:var(--amber-ink);margin:0" hidden>${L.priceErr}</p>
+        <button type="submit" class="btn block">${L.send}</button>
+      </form>`;
+  },
+  rokna(){
+    const L=t();
+    const req=S.request?`<div class="card hl"><div style="font-weight:600">${L.newReq}</div><div class="sub">${L.honeyFrom} · ${esc(S.request.qty)} ${L.unit} · ${esc(S.request.space)} · ${esc(S.request.conds)}</div><div class="row"><button type="button" class="btn small" style="flex:1" id="accept">${L.hasSpace}</button><button type="button" class="btn plain small" id="decline">${L.noSpace}</button></div></div>`:'';
+    const inc=S.incoming.counted?'':`<div class="card" style="background:var(--amber-soft);border-color:transparent"><div style="font-weight:600">${L.incoming}</div><div class="sub" style="color:var(--amber-ink)">${L.incomingTxt(S.incoming.qty)}</div><button type="button" class="btn small" style="background:var(--ink);color:var(--bg)" data-photo="incoming">${L.countBtn}</button></div>`;
+    const orders=S.orders.filter(o=>o.rokna==='maarif'&&['proposed','todrop','ready','paid','done'].includes(o.status)).map(o=>{
+      let pill,note,act='';
+      if(o.status==='proposed'){pill='os_proposed';note=L.r_coming;}
+      else if(o.status==='todrop'){pill='os_todrop';note=L.r_todrop;act=`<button type="button" class="btn small" data-got="${o.id}">${L.r_gotIt}</button>`;}
+      else if(o.status==='ready'){pill='os_ready';note=L.r_waitCust(hoursLeft(o));act=`<button type="button" class="btn small" data-pay="${o.id}">${L.r_paidBtn}</button>`;}
+      else if(o.status==='paid'){pill='os_paid';note=L.r_refShown(`<span class="ltr">${esc(o.ref)}</span>`);act=`<button type="button" class="btn small" data-photo="${o.id}">${L.r_handBtn}</button>`;}
+      else{pill='os_done';note=L.r_refShown(`<span class="ltr">${esc(o.ref)}</span>`);act=`<span style="color:var(--brand)" role="img" aria-label="${L.done}">${ICON.check.replace(/14/g,'22')}</span>`;}
+      return `<div class="card"><div class="row"><div class="stack" style="gap:4px;min-width:0"><div style="font-weight:600"><span class="ltr">#${o.id}</span> · ${o.qty} × ${esc(itemName(o))}</div><div class="row" style="justify-content:flex-start;gap:6px;flex-wrap:wrap"><span class="pill ${OS_PILL[o.status]}">${L['os_'+pill.slice(3)]}</span><span class="sub">${note}</span></div></div>${act}</div></div>`;
+    }).join('');
+    return `<div class="top"><div><div class="sub" style="color:var(--brand);font-weight:600">${L.partner}</div><h1>${L.hanout}</h1></div><div class="end"><div class="sub">${L.week}</div><div style="font-weight:700">${L.amountPh} ${L.dh}</div></div></div>
+      <button type="button" class="btn plain small" data-chat="maarif">${ICON.chat} ${L.msgProducer} · ${L.honeyFrom}</button>
+      ${req}${inc}
+      <div class="row"><h2>${L.todayOrders}</h2><span class="sub">${L.left(S.orders.filter(o=>o.rokna==='maarif'&&['ready','paid'].includes(o.status)).length)}</span></div>
+      <div class="stack">${orders}</div>`;
+  },
+  photo(){
+    const L=t(),id=S.photoFor; if(!id){location.hash='rokna';return '';}
+    const isInc=id==='incoming';
+    return `<div class="top" style="justify-content:flex-start">${backBtn('rokna')}<div><h1 style="font-size:20px">${isInc?L.photoInc:L.photoOrder(id)}</h1><div class="sub">${isInc?L.photoIncSub(S.incoming.qty):L.photoOrderSub}</div></div></div>
+      <div class="photo" id="shot"><div class="stack" style="align-items:center"><span style="color:var(--brand)">${ICON.cam}</span><div style="font-weight:600">${L.shootHint}</div><div class="note">${L.shootSub}</div></div></div>
+      <div class="stamp" id="stampLine" hidden></div>
+      ${isInc?`<div class="field"><label for="count">${L.count}</label><input id="count" type="number" inputmode="numeric" value="${S.incoming.qty}"></div>`:''}
+      <label class="btn plain block" for="cam" style="font-size:15px">${ICON.cam} ${L.openCam}</label>
+      <input id="cam" type="file" accept="image/*" capture="environment" hidden>
+      <button type="button" class="btn block" id="confirmPhoto" disabled>${L.confirm}</button>`;
+  },
+  vendor(){
+    const L=t();
+    const prods=S.items.filter(i=>i.seller==='vendor').map(i=>`<div class="card"><div class="row" style="align-items:flex-start">${i.photo?`<img src="${i.photo}" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:10px">`:''}<div style="flex:1;min-width:0"><div style="font-weight:600">${esc(N(i.name))}</div><div class="sub">${L.v_inStock(i.qty)}</div></div><div style="font-weight:700;white-space:nowrap">${i.price?esc(i.price):L.pricePlace} ${L.dh}</div></div></div>`).join('');
+    const vord=S.orders.filter(o=>sellerOf(o)==='vendor');
+    const ordHtml=vord.length?vord.map(o=>{
+      if(o.status==='new'){
+        return `<div class="card hl"><div class="row"><div style="font-weight:700"><span class="ltr">#${o.id}</span> · ${o.qty} × ${esc(itemName(o))}</div><span class="pill p-amber">${L.os_new}</span></div>
+          <div class="sub">${L.p_custArea(L.c_area)}</div><div class="sub">${L.v_chooseHub}</div>
+          ${hubOpts().map(({r,d})=>`<div class="row"><div><div style="font-weight:600">${esc(N(r.name))}</div><div class="sub"><span class="num">${L.km(d)}</span> · ${L.r_transfer}</div></div><button type="button" class="btn small" data-vpropose="${o.id}|${r.id}">${L.p_propose}</button></div>`).join('')}</div>`;
+      }
+      const r=o.rokna?S.roknas.find(x=>x.id===o.rokna):null;
+      const extra=(o.status==='todrop'&&r)?`<div style="font-weight:600;color:var(--rv-ink)">${L.v_drop(esc(N(r.name)))}</div>`:'';
+      return `<div class="card"><div class="row"><span><span class="ltr">#${o.id}</span> · ${o.qty} × ${esc(itemName(o))}</span><span class="pill ${OS_PILL[o.status]}">${L['os_'+o.status]}</span></div>${extra}</div>`;
+    }).join(''):`<div class="note">${L.v_noOrders}</div>`;
+    return `<div class="top"><div><div class="sub" style="color:var(--rv);font-weight:600">${L.r_vendor}</div><h1>${L.v_title}</h1></div></div>
+      <p class="sub" style="margin:0;font-size:15px">${L.v_sub}</p>
+      <h2>${L.v_orders}</h2><div class="stack">${ordHtml}</div>
+      <h2>${L.v_products}</h2><div class="stack">${prods}</div>
+      <form id="vForm" class="card" novalidate><h2 style="font-size:16px">${L.v_add}</h2>
+        <div class="field"><label for="v_name">${L.v_name}</label><input id="v_name" type="text"></div>
+        <div class="grid2"><div class="field"><label for="v_price">${L.v_price}</label><input id="v_price" type="text" inputmode="decimal" dir="ltr"></div><div class="field"><label for="v_qty">${L.v_qty}</label><input id="v_qty" type="number" inputmode="numeric" value="1" dir="ltr"></div></div>
+        <label class="btn plain block" for="v_photo">${ICON.cam} ${L.v_photo}</label><input id="v_photo" type="file" accept="image/*" hidden>
+        ${S.vPhoto?`<img src="${S.vPhoto}" alt="" style="max-height:120px;border-radius:10px;align-self:flex-start">`:''}
+        <p id="vErr" class="sub" style="color:var(--amber-ink);margin:0" hidden>${L.v_err}</p>
+        <button type="submit" class="btn block">${L.v_save}</button>
+      </form>`;
+  },
+  pay(){
+    const L=t(),o=S.orders.find(x=>x.id===S.payFor); if(!o){location.hash='rokna';return '';}
+    return `<div class="top" style="justify-content:flex-start">${backBtn('rokna')}<div><h1 style="font-size:20px">${L.r_payTitle(o.id)}</h1><div class="sub">${o.qty} × ${esc(itemName(o))}</div></div></div>
+      <div class="card"><div class="row"><span class="sub">${L.c_amount}</span><span style="font-weight:700">${o.qty} × ${L.pricePlace} ${L.dh}</span></div>
+        <div class="row"><span class="sub">${L.c_to}</span><span style="font-weight:600">${esc(sellerName(o))}</span></div></div>
+      <p class="note" style="margin:0">${L.r_payNote}</p>
+      <form id="payForm" class="stack" novalidate>
+        <div class="field"><label for="ref">${L.r_ref}</label><input id="ref" type="text" inputmode="numeric" dir="ltr" placeholder="${L.r_refPh}" autocomplete="off"></div>
+        <p id="refErr" class="sub" style="color:var(--amber-ink);margin:0" hidden>${L.r_refErr}</p>
+        <button type="submit" class="btn block">${L.r_confirmPaid}</button>
+      </form>`;
+  },
+  customer(){
+    const L=t(),o=S.orders.find(x=>x.id===S.myOrder);
+    const active=o&&!['done','cancelled'].includes(o.status);
+    let html=`<div class="top"><div><div class="sub" style="color:var(--rd);font-weight:600">${L.r_customer}</div><h1>${L.c_title}</h1></div></div>
+      <div class="sub">${L.c_areaLbl} ${L.c_area}</div>`;
+    if(!active){
+      if(o)html+=`<div class="card" style="background:var(--brand-soft);border-color:transparent;font-weight:600">${o.status==='done'?L.c_done:L.c_cancelled}</div>`;
+      html+=`<div class="card" style="gap:6px"><div style="font-weight:700">${L.c_linkTitle}</div><div class="note">${L.c_linkTxt}</div></div>`;
+      return html;
+    }
+    const doneN={new:1,proposed:2,todrop:2,ready:3,paid:4}[o.status];
+    const steps=['c_s1','c_s2','c_s3','c_s4','c_s5'].map((k,i)=>`<div class="step"><div class="dot ${i<doneN?'done':''}">${i<doneN?ICON.check:''}</div><div style="font-weight:${i===doneN?700:500};${i>doneN?'color:var(--muted)':''}">${L[k]}</div></div>`).join('');
+    const r=o.rokna?S.roknas.find(x=>x.id===o.rokna):null;
+    const rk=r?`<div style="font-weight:700">${esc(N(r.name))}</div><div class="sub"><span class="num">${L.km(DIST[r.id]||5)}</span> · ${L.c_open} <span class="ltr">8:00 – 23:00</span></div><div><span class="pill p-green">${L.r_transfer}</span></div>`:'';
+    let detail='';
+    if(o.status==='new')detail=`<div class="card"><div class="note">${L.c_waitProd}</div></div>`;
+    if(o.status==='proposed')detail=`<div class="card hl"><div class="sub">${L.c_proposed}</div>${rk}<button type="button" class="btn block" id="confirmPlace">${L.c_confirmPlace}</button></div>`;
+    if(o.status==='todrop')detail=`<div class="card hl">${rk}<div class="note">${L.c_waitDrop}</div></div>`;
+    if(o.status==='ready')detail=`<div class="card hl">${rk}<div class="note">${L.c_held(hoursLeft(o))}</div>
+      <div class="row"><span class="sub">${L.c_amount}</span><span style="font-weight:700">${o.qty} × ${L.pricePlace} ${L.dh}</span></div>
+      <div class="row"><span class="sub">${L.c_to}</span><span style="font-weight:600">${esc(sellerName(o))}</span></div>
+      <div class="note">${L.c_payInfo}</div></div>`;
+    if(o.status==='paid')detail=`<div class="card hl"><div style="color:var(--brand);font-weight:700">${L.c_paid(`<span class="ltr">${esc(o.ref)}</span>`)}</div>${rk}<div class="note">${L.c_pickNow}</div></div>`;
+    const cancel=['new','proposed','todrop','ready'].includes(o.status)?`<button type="button" class="btn plain block" id="cCancel">${L.c_cancel}</button>`:'';
+    return html+`<div class="row"><h2>${L.c_myOrder||''}<span class="ltr">#${o.id}</span> · ${o.qty} × ${esc(itemName(o))}</h2></div>
+      <div class="card">${steps}</div>${detail}${cancel}<p class="note" style="margin:0">${L.c_returnNote}</p>`;
+  }
+};
+
+function kgOf(unit){const m=String(unit||'').replace(',','.').match(/(\d+(?:\.\d+)?)\s*(kg|كلغ|g|غ|ml|مل|l|ل)/i);if(!m)return null;const v=parseFloat(m[1]),k=m[2].toLowerCase();return ['kg','كلغ','l','ل'].includes(k)?v:v/1000;}
+function openPack(){
+  const L=t(),u=S.su,d=Object.assign({},u.pack),prevFocus=document.activeElement;
+  const host=document.createElement('div');document.body.appendChild(host);
+  const est=()=>{const k=kgOf(d.unit);return k&&d.perBox?Math.round(k*d.perBox*10)/10:null;};
+  const estTxt=()=>{const e=est();return e?L.pk_est(e):L.pk_noEst;};
+  const g=id=>host.querySelector('#'+id);
+  const read=()=>{d.unit=g('pk_unit').value.trim();d.perBox=Number(g('pk_per').value)||0;d.L=g('pk_L').value;d.W=g('pk_W').value;d.H=g('pk_H').value;d.weight=g('pk_weight').value.trim();};
+  const close=()=>{host.remove();document.removeEventListener('keydown',onKey);if(prevFocus&&prevFocus.focus)prevFocus.focus();};
+  const onKey=e=>{if(e.key==='Escape')close();};
+  document.addEventListener('keydown',onKey);
+  const draw=first=>{
+    host.innerHTML=`<div class="overlay"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pkTitle">
+      <div class="row"><h2 id="pkTitle">${L.pk_title}</h2><button type="button" class="back" id="pkClose" aria-label="${L.pk_close}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div class="field"><span style="font-size:13px;font-weight:600">${L.pk_container}</span><div class="chips" role="group" aria-label="${L.pk_container}">${L.pk_containers.map((c,i)=>`<button type="button" class="chip" data-pkc="${i}" aria-pressed="${d.container===i}">${c}</button>`).join('')}</div></div>
+      <div class="field"><label for="pk_unit">${L.pk_unit}</label><div class="chips" role="group" aria-label="${L.pk_unit}">${L.pk_units.map(c=>`<button type="button" class="chip" data-pku="${c}" aria-pressed="${d.unit===c}">${c}</button>`).join('')}</div><input id="pk_unit" type="text" placeholder="${L.pk_unitPh}" value="${esc(d.unit)}"></div>
+      <div class="field"><label for="pk_per">${L.pk_perBox}</label><input id="pk_per" type="number" inputmode="numeric" min="1" value="${d.perBox||''}" dir="ltr"></div>
+      <div class="field"><span style="font-size:13px;font-weight:600">${L.pk_box}</span><div class="grid3">
+        <div class="field"><label class="mini" for="pk_L">${L.pk_L}</label><input id="pk_L" type="number" inputmode="numeric" value="${esc(d.L)}" dir="ltr"></div>
+        <div class="field"><label class="mini" for="pk_W">${L.pk_W}</label><input id="pk_W" type="number" inputmode="numeric" value="${esc(d.W)}" dir="ltr"></div>
+        <div class="field"><label class="mini" for="pk_H">${L.pk_H}</label><input id="pk_H" type="number" inputmode="numeric" value="${esc(d.H)}" dir="ltr"></div></div></div>
+      <div class="field"><label for="pk_weight">${L.pk_weight}</label><input id="pk_weight" type="text" inputmode="decimal" value="${esc(d.weight)}" placeholder="${est()||''}" dir="ltr"><div class="note" id="pkEst">${estTxt()}</div></div>
+      <div class="row"><button type="button" class="btn plain" id="pkCancel">${L.pk_cancel}</button><button type="button" class="btn" style="flex:1" id="pkSave">${L.pk_save}</button></div>
+    </div></div>`;
+    host.querySelector('.overlay').onclick=e=>{if(e.target===e.currentTarget)close();};
+    g('pkClose').onclick=close;g('pkCancel').onclick=close;
+    host.querySelectorAll('[data-pkc]').forEach(b=>b.onclick=()=>{read();d.container=Number(b.dataset.pkc);draw();});
+    host.querySelectorAll('[data-pku]').forEach(b=>b.onclick=()=>{read();d.unit=b.dataset.pku;draw();});
+    ['pk_unit','pk_per'].forEach(id=>g(id).addEventListener('input',()=>{read();g('pkEst').textContent=estTxt();g('pk_weight').placeholder=est()||'';host.querySelectorAll('[data-pku]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pku===d.unit)));}));
+    g('pkSave').onclick=()=>{read();if(!d.weight&&est())d.weight=String(est());d.set=true;u.pack=d;close();render();};
+    if(first)g('pkClose').focus();
+  };
+  draw(true);
+}
+
+function render(){
+  const L=t();
+  let r=(location.hash||'').slice(1); if(!screens[r]) r='producer';
+  if(!S.registered && ROLE_OF[r]==='producer') r='signup';
+  if(S.registered && r==='signup') r='producer';
+  const role=r==='chat'?S.chatRole:ROLE_OF[r];
+  document.documentElement.lang = lang==='fr'?'fr':'ary';
+  document.documentElement.dir = lang==='fr'?'ltr':'rtl';
+  document.body.dataset.activeRole = role;
+  try{document.getElementById('today').textContent=new Intl.DateTimeFormat(lang==='fr'?'fr-MA':'ar-MA-u-nu-latn',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date());}catch(e){document.getElementById('today').textContent=new Date().toLocaleDateString();}
+  document.getElementById('rolesGroup').setAttribute('aria-label',L.roles);
+  document.querySelectorAll('#rolesGroup [data-role]').forEach(b=>{b.innerHTML=ROLE_ICON[b.dataset.role]+`<span>${L['r_'+b.dataset.role]}</span>`;b.setAttribute('aria-pressed',String(b.dataset.role===role));});
+  document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
+  const html=screens[r](); if(html==='')return;
+  view.innerHTML=`<div class="screen stack" style="gap:16px">${html}</div>`;
+  const nav=document.getElementById('tabs');
+  nav.setAttribute('aria-label',L.menu);
+  nav.innerHTML=(r==='signup'||r==='chat')?'':TABS[role].map(([id,key,ic])=>`<button type="button" data-go="${id}" ${id===r||(id==='kellef'&&r==='annex')?'aria-current="page"':''}>${ic}${L[key]}</button>`).join('');
+  bind(r);
+}
+
+function bind(r){
+  const L=t();
+  if(r==='signup'){
+    const u=S.su;
+    const save=()=>{['name','ice','city','phone','product','size','code'].forEach(k=>{const el=document.getElementById('su_'+k);if(el)u[k]=el.value.trim();});const ag=document.getElementById('su_agree');if(ag)u.agree=ag.checked;};
+    view.querySelectorAll('#suForm input').forEach(i=>i.addEventListener('input',save));
+    const ag=document.getElementById('su_agree');if(ag)ag.onchange=save;
+    view.querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{save();u.status=Number(b.dataset.status);render();});
+    view.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{save();u.cat=Number(b.dataset.cat);render();});
+    view.querySelectorAll('[data-sucond]').forEach(b=>b.onclick=()=>{save();const i=Number(b.dataset.sucond);u.conds=u.conds.includes(i)?u.conds.filter(x=>x!==i):[...u.conds,i];render();});
+    const prev=document.getElementById('suPrev');if(prev)prev.onclick=()=>{save();u.step--;render();window.scrollTo(0,0);};
+    const op=document.getElementById('openPack');if(op)op.onclick=()=>{save();openPack();};
+    document.getElementById('suForm').addEventListener('submit',e=>{
+      e.preventDefault();save();
+      const ok=u.step===1?(u.name&&u.phone):u.step===2?u.product:(u.agree&&/^\d{4}$/.test(u.code));
+      if(!ok){document.getElementById('suErr').hidden=false;return;}
+      if(u.step<3){u.step++;render();window.scrollTo(0,0);return;}
+      S.registered=true;go('kellef');window.scrollTo(0,0);toast(L.su_done);
+    });
+  }
+  if(r==='chat'){
+    const id=S.chatFor,me=S.chatRole,th=thread(id);
+    const add=m=>{th.push(Object.assign({from:me,time:hm()},m));if(!S.waSent[id]){S.waSent[id]=true;th.push({from:'system',text:{ary:T.ary.waAlert,fr:T.fr.waAlert},time:hm()});}render();};
+    view.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>add({type:'quick',key:b.dataset.q}));
+    document.getElementById('chatForm').addEventListener('submit',e=>{e.preventDefault();const v=document.getElementById('chatText').value.trim();if(v)add({type:'text',text:{raw:v}});});
+    const ph=document.getElementById('chatPhoto');ph.onchange=()=>readPhoto(ph,src=>add({type:'photo',photo:src}));
+    document.getElementById('voiceBtn').onclick=()=>{add({type:'voice',dur:'07'});toast(L.recHint);};
+    const sp=document.getElementById('supportBtn');if(sp)sp.onclick=()=>{th.push({from:'system',text:{ary:T.ary.supportJoined,fr:T.fr.supportJoined},time:hm()},{from:'support',type:'text',text:{ary:T.ary.supportHello,fr:T.fr.supportHello},time:hm()});render();};
+    requestAnimationFrame(()=>window.scrollTo(0,document.body.scrollHeight));
+  }
+  if(r==='producer'){
+    document.getElementById('topup').onclick=()=>toast(L.topupToast);
+    view.querySelectorAll('[data-phub]').forEach(b=>b.onclick=()=>{view.querySelectorAll('[data-phub]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));});
+    const pf=document.getElementById('pOrder');if(pf)pf.addEventListener('submit',e=>{
+      e.preventDefault();
+      const ph=document.getElementById('p_phone').value.trim();if(ph.replace(/\D/g,'').length<9){document.getElementById('pErr').hidden=false;return;}
+      const hub=(view.querySelector('[data-phub][aria-pressed="true"]')||{}).dataset;if(!hub)return;
+      const id='K-'+(S.nextId++);S.orders.unshift({id,item:'honey',qty:Math.max(1,Number(document.getElementById('p_qty').value)||1),status:'proposed',rokna:hub.phub,ref:'',phone:ph});S.myOrder=id;render();toast(L.p_linkSent);
+    });
+    view.querySelectorAll('[data-propose]').forEach(b=>b.onclick=()=>{const [oid,rid]=b.dataset.propose.split('|');const o=S.orders.find(x=>x.id===oid);o.status='proposed';o.rokna=rid;render();toast(L.p_proposedToast);});
+  }
+  if(r==='kellef'){
+    view.querySelectorAll('[data-city]').forEach(b=>b.onclick=()=>{S.city=b.dataset.city;render();});
+    view.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{S.draftShop=S.shops[S.city].find(s=>s.id===b.dataset.pick);go('annex');});
+  }
+  if(r==='annex'){
+    view.querySelectorAll('[data-cond]').forEach(b=>b.onclick=()=>b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true')));
+    document.getElementById('annexForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const price=document.getElementById('price').value.trim();
+      if(!price){document.getElementById('formErr').hidden=false;document.getElementById('price').focus();return;}
+      const s=S.draftShop,qty=document.getElementById('qty').value||'0';
+      const conds=[...view.querySelectorAll('[data-cond][aria-pressed="true"]')].map(b=>b.textContent).join('، ')||L.noCond;
+      S.roknas=S.roknas.filter(x=>x.id!==s.id);
+      S.roknas.push({id:s.id,name:s.name,city:S.city,stock:0,cap:Number(qty)||1,status:'pending'});
+      S.request={id:s.id,qty,space:document.getElementById('space').value,conds,price};
+      S.draftShop=null; go('producer'); toast(L.sentToast);
+    });
+  }
+  if(r==='rokna'){
+    const a=document.getElementById('accept'),d=document.getElementById('decline');
+    if(a)a.onclick=()=>{const rk=S.roknas.find(x=>x.id===S.request.id);if(rk)rk.status='active';S.request=null;render();toast(L.acceptToast);};
+    if(d)d.onclick=()=>{S.roknas=S.roknas.filter(x=>x.id!==S.request.id);S.request=null;render();toast(L.declineToast);};
+    view.querySelectorAll('[data-photo]').forEach(b=>b.onclick=()=>{S.photoFor=b.dataset.photo;go('photo');});
+    view.querySelectorAll('[data-got]').forEach(b=>b.onclick=()=>{const o=S.orders.find(x=>x.id===b.dataset.got);o.status='ready';o.heldUntil=Date.now()+48*3.6e6;render();toast(L.r_gotToast);});
+    view.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{S.payFor=b.dataset.pay;go('pay');window.scrollTo(0,0);});
+  }
+  if(r==='photo'){
+    const cam=document.getElementById('cam'),ok=document.getElementById('confirmPhoto');
+    cam.onchange=()=>readPhoto(cam,src=>{document.getElementById('shot').innerHTML=`<img src="${src}" alt="">`;const st=document.getElementById('stampLine');st.innerHTML=`<span class="ltr">${stamp()}</span> · ${L.loc}`;st.hidden=false;ok.disabled=false;});
+    ok.onclick=()=>{
+      const rk=S.roknas.find(x=>x.id==='maarif');
+      if(S.photoFor==='incoming'){const n=Number(document.getElementById('count').value)||0;S.incoming.counted=true;if(rk)rk.stock=Math.min(rk.cap,rk.stock+n);toast(n>=S.incoming.qty?L.gotToast(n):L.missToast(S.incoming.qty-n));}
+      else{const o=S.orders.find(x=>x.id===S.photoFor);o.status='done';if(rk)rk.stock=Math.max(0,rk.stock-o.qty);toast(L.handedToast(o.id));}
+      S.photoFor=null;go('rokna');
+    };
+  }
+  if(r==='vendor'){
+    view.querySelectorAll('[data-vpropose]').forEach(b=>b.onclick=()=>{const [oid,rid]=b.dataset.vpropose.split('|');const o=S.orders.find(x=>x.id===oid);o.status='proposed';o.rokna=rid;render();toast(L.p_proposedToast);});
+    const ph=document.getElementById('v_photo');ph.onchange=()=>readPhoto(ph,src=>{const n=document.getElementById('v_name').value,pr=document.getElementById('v_price').value,q=document.getElementById('v_qty').value;S.vPhoto=src;render();document.getElementById('v_name').value=n;document.getElementById('v_price').value=pr;document.getElementById('v_qty').value=q;});
+    document.getElementById('vForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const n=document.getElementById('v_name').value.trim(),pr=document.getElementById('v_price').value.trim(),q=Math.max(1,Number(document.getElementById('v_qty').value)||1);
+      if(!n||!pr){document.getElementById('vErr').hidden=false;return;}
+      S.items.push({id:'v'+Date.now(),seller:'vendor',name:{ary:n,fr:n},by:{ary:T.ary.c_fromVendor,fr:T.fr.c_fromVendor},price:pr,qty:q,photo:S.vPhoto});S.vPhoto=null;render();toast(L.v_posted);
+    });
+  }
+  if(r==='pay'){
+    document.getElementById('payForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const v=document.getElementById('ref').value.trim();
+      if(v.replace(/[\s-]/g,'').length<6){document.getElementById('refErr').hidden=false;document.getElementById('ref').focus();return;}
+      const o=S.orders.find(x=>x.id===S.payFor);o.ref=v;o.status='paid';S.payFor=null;go('rokna');toast(L.r_paidToast);
+    });
+  }
+  if(r==='customer'){
+    const q=d=>{S.cQty=Math.min(10,Math.max(1,S.cQty+d));render();};
+    const m=document.getElementById('qMinus'),p=document.getElementById('qPlus');if(m)m.onclick=()=>q(-1);if(p)p.onclick=()=>q(1);
+    view.querySelectorAll('[data-order]').forEach(b=>b.onclick=()=>{const id='K-'+(S.nextId++);S.orders.unshift({id,item:b.dataset.order,qty:S.cQty,status:'new',rokna:null,ref:''});S.myOrder=id;S.cQty=1;render();toast(L.c_orderedToast);});
+    const cp=document.getElementById('confirmPlace');if(cp)cp.onclick=()=>{const o=S.orders.find(x=>x.id===S.myOrder);if(sellerOf(o)==='vendor'){o.status='todrop';}else{o.status='ready';o.heldUntil=Date.now()+48*3.6e6;}render();toast(L.c_confirmedToast);};
+    const cc=document.getElementById('cCancel');if(cc)cc.onclick=()=>{const o=S.orders.find(x=>x.id===S.myOrder);o.status='cancelled';render();toast(L.c_cancelled);};
+  }
+}
+
+document.addEventListener('click',e=>{
+  const c=e.target.closest('[data-chat]');
+  if(c){e.preventDefault();const cur=(location.hash||'').slice(1);S.chatFor=c.dataset.chat;S.chatRole=ROLE_OF[cur]==='rokna'?'rokna':'producer';go('chat');return;}
+  const b=e.target.closest('[data-go]');if(b){e.preventDefault();go(b.dataset.go);window.scrollTo(0,0);}
+});
+document.querySelectorAll('#rolesGroup [data-role]').forEach(b=>b.onclick=()=>{
+  const cur=(location.hash||'').slice(1),rl=b.dataset.role;
+  if(cur==='chat'&&S.chatFor==='maarif'&&(rl==='producer'||(rl==='rokna'))&&S.registered){S.chatRole=rl;render();return;}
+  go(rl);window.scrollTo(0,0);
+});
+document.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{lang=b.dataset.lang;try{localStorage.setItem('kellefni-lang',lang);}catch(e){}render();});
+window.addEventListener('hashchange',render);
+render();
+</script>
+
+</body>
+</html>
