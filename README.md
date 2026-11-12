@@ -4,8 +4,8 @@
 
 ## ▶ Open the app
 
-- **Phase 1 pilot:** https://hmissaoui1970.github.io/hnaHub/
-- **Full prototype:** https://hmissaoui1970.github.io/hnaHub/full.html
+- **Full app:** https://hmissaoui1970.github.io/hnaHub/
+- **Phase 1 pilot (simple):** https://hmissaoui1970.github.io/hnaHub/pilot.html
 
 Neighborhood shops ("hubs") in Moroccan cities store sellers' goods and act as pickup and pay-at-counter points. The customer checks the goods at the hub, pays the seller by money transfer at the hub's counter, and takes the order.
 
