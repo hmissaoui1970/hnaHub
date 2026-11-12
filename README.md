@@ -1,5 +1,12 @@
 # HnaHub
 
+<img src="logo/hnahub-icon-192.png" width="96" alt="HnaHub logo">
+
+## ▶ Open the app
+
+- **Phase 1 pilot:** https://hmissaoui1970.github.io/hnaHub/
+- **Full prototype:** https://hmissaoui1970.github.io/hnaHub/full.html
+
 Neighborhood shops ("hubs") in Moroccan cities store sellers' goods and act as pickup and pay-at-counter points. The customer checks the goods at the hub, pays the seller by money transfer at the hub's counter, and takes the order.
 
 Clickable prototypes in Darija (Arabic script) and French. No backend: data is example data and resets on reload.
