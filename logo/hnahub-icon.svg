@@ -1,9 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="HnaHub"><rect width="512" height="512" rx="112" fill="#FFFFFF"/><g transform="translate(68 -4) scale(.74)"><path d="M256 84 L440 226 L404 226 L404 392 Q404 404 392 404 L120 404 Q108 404 108 392 L108 226 L72 226 Z" fill="#17694A" stroke="#17694A" stroke-width="16" stroke-linejoin="round"/>
-<rect x="166" y="214" width="62" height="176" rx="12" fill="#FFFFFF"/>
-<rect x="284" y="214" width="62" height="176" rx="12" fill="#FFFFFF"/>
-<rect x="220" y="290" width="72" height="34" fill="#FFFFFF"/>
-<rect x="232" y="240" width="48" height="40" rx="5" fill="#F2B441"/><rect x="250" y="240" width="12" height="14" fill="#B86E00"/>
-<rect x="232" y="336" width="48" height="44" rx="5" fill="#F2B441"/><rect x="250" y="336" width="12" height="14" fill="#B86E00"/>
-<path d="M150 318 C 70 340, 72 404, 180 416 C 270 426, 350 412, 404 386" fill="none" stroke="#F28C1B" stroke-width="28" stroke-linecap="round"/>
-<path d="M386 352 L452 366 L408 418 Z" fill="#F28C1B" stroke="#F28C1B" stroke-width="10" stroke-linejoin="round"/>
-</g><text x="256" y="448" text-anchor="middle" font-family="Arial Black, Arial, Helvetica, sans-serif" font-weight="900" font-style="italic" font-size="100" letter-spacing="-3"><tspan fill="#17694A">Hna</tspan><tspan fill="#F28C1B">Hub</tspan></text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="HnaHub"><rect width="512" height="512" rx="112" fill="#FFFFFF"/><g transform="translate(110 28) scale(.57)"><rect x="92" y="60" width="120" height="392" rx="22" fill="#17694A"/>
+<rect x="300" y="60" width="120" height="392" rx="22" fill="#17694A"/>
+<rect x="200" y="226" width="112" height="60" fill="#17694A"/>
+<rect x="219" y="142" width="74" height="74" rx="8" fill="#F2B441"/><rect x="247" y="142" width="18" height="22" fill="#B86E00"/>
+<rect x="219" y="368" width="74" height="74" rx="8" fill="#F2B441"/><rect x="247" y="368" width="18" height="22" fill="#B86E00"/>
+</g><text x="256" y="452" text-anchor="middle" font-family="Arial Black, Arial, Helvetica, sans-serif" font-weight="900" font-style="italic" font-size="100" letter-spacing="-3"><tspan fill="#17694A">Hna</tspan><tspan fill="#F28C1B">Hub</tspan></text></svg>
