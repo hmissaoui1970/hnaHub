@@ -25,7 +25,8 @@ Open `index.html` in a browser, or enable GitHub Pages on the `main` branch.
 
 Files are in [`logo/`](logo/):
 
-- `hnahub-logo-1024.png`, `hnahub-logo-rounded.png`: the main 3D logo, with clean edges. Use it for shop signs, social media and the welcome screen.
-- `hnahub-icon.svg` / `hnahub-icon-1024.png`: the flat H logo (name on the crossbar) on white, for print, receipts and stickers.
-- `hnahub-icon-small.svg` and its PNGs: the app icon and favicon (no text). It is also in `favicon.svg`.
-- `hnahub-mark.svg`: the H mark alone, on a transparent background.
+- `hnahub-icon-1024.png` (plus 512, 192, 180, 64 and 32 px versions): the official HnaHub logo. It is an orange H made of shelves with boxes, with "HnaHub" across the middle, on green with rounded corners and a transparent background outside.
+- `hnahub-icon-appstore-1024.png`: a square version with no transparency, for Google Play and the App Store.
+- `hnahub-logo-1024.png`, `hnahub-logo-rounded.png`: the earlier 3D house logo, kept for reference.
+
+The browser-tab icon is `favicon.png`.
