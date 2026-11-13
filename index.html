@@ -313,6 +313,7 @@ input::placeholder{color:#86AE99}
 .map{background:#013624}
 .tabs nav{box-shadow:0 10px 30px rgba(0,20,10,.5)}
 .toggle i::after{background:#9DBFAD}
+body[data-demo="0"] #rolesGroup{display:none}
 </style>
 
 <div class="app">
@@ -869,7 +870,7 @@ Object.assign(T.ary,{
        ['كيفاش نتبع الستوك ديالي؟','ف "الستوك" كتشوف شحال باقي ف كل هَب، وكيوصلك تنبيه ملي يقل.'],
        ['علاش الهَب كيصوّر ملي كيسلّم الطلب؟','باش تكون حجة أن السلعة تسلّمات مزيانة.']],
   contact:'تواصل معانا', c_chat:'شات مع الدعم', c_call:'واتساب', c_mail:'صيفط إيميل', c_soon:'الرقم والإيميل غادي يتزادو قبل الإطلاق',
-  q_helpOrder:'عندي مشكل ف طلب', q_helpPay:'سؤال على الأداء', q_helpOther:'سؤال آخر', supportGreet:'السلام، أنا من فريق HnaHub. كيفاش نقدر نعاونك؟'
+  q_helpOrder:'عندي مشكل ف طلب', q_helpPay:'سؤال على الأداء', q_helpOther:'سؤال آخر', supportGreet:'السلام، أنا من فريق HnaHub. كيفاش نقدر نعاونك؟', st_demo:'وضع التجربة', st_demoTxt:'كيبيّن الأزرار ديال الأدوار الفوق باش تجرب كلشي. طفيه باش يبان التطبيق بحال الحقيقي: كل واحد كيشوف غير الصفحات ديالو.', st_demoOn:'وضع التجربة خدام', st_demoOff:'دابا التطبيق بحال الحقيقي'
 });
 Object.assign(T.fr,{
   au_welcome:'Bienvenue sur HnaHub', au_sub:'Connectez-vous pour suivre vos commandes et votre stock', au_phone:'WhatsApp', au_email:'E-mail', au_pass:'Mot de passe',
@@ -905,11 +906,11 @@ Object.assign(T.fr,{
        ['Comment suivre mon stock ?','Dans « Stock », vous voyez ce qui reste dans chaque hub et recevez une alerte quand il baisse.'],
        ['Pourquoi le hub prend-il une photo à la remise ?','Comme preuve que la commande a été remise en bon état.']],
   contact:'Nous contacter', c_chat:'Chat avec le support', c_call:'WhatsApp', c_mail:'Envoyer un e-mail', c_soon:'Le numéro et l’e-mail seront ajoutés avant le lancement',
-  q_helpOrder:'Problème avec une commande', q_helpPay:'Question sur un paiement', q_helpOther:'Autre question', supportGreet:'Bonjour, ici l’équipe HnaHub. Comment pouvons-nous vous aider ?'
+  q_helpOrder:'Problème avec une commande', q_helpPay:'Question sur un paiement', q_helpOther:'Autre question', supportGreet:'Bonjour, ici l’équipe HnaHub. Comment pouvons-nous vous aider ?', st_demo:'Mode démo', st_demoTxt:'Affiche les boutons des rôles en haut pour tout tester. Désactivez-le pour voir l’app comme un vrai utilisateur : chacun ne voit que ses propres écrans.', st_demoOn:'Mode démo activé', st_demoOff:'L’app fonctionne maintenant comme la vraie'
 });
 
 Object.assign(S,{
-  loggedIn:false, lastRole:'producer', auMode:'phone', otpFor:'', regRole:'producer', fgStep:1,
+  loggedIn:false, lastRole:'producer', myRole:'producer', demo:(()=>{try{return localStorage.getItem('hnahub-demo')!=='0';}catch(e){return true;}})(), auMode:'phone', otpFor:'', regRole:'producer', fgStep:1,
   profile:{name:'',phone:'',email:'',city:'casa'},
   notif:{ch:{sms:true,wa:true,mail:false,app:true},ty:{orders:true,stock:true,pay:true,news:false}},
   reorder:{maarif:8,agdal:6,gueliz:6}, shipments:[], sendOpen:false, sendHub:'maarif', adjFor:null, adjReason:0,
@@ -1066,7 +1067,7 @@ Object.assign(screens,{
     if(S.ptab===0)body=`<form id="prForm" class="stack" novalidate>${field('pr_name',L.pr_name,p.name||S.su.name,'text')}${field('pr_phone',L.pr_phone,p.phone||S.su.phone,'tel','06 00 00 00 00')}${field('pr_email',L.pr_email,p.email,'email','nom@exemple.ma')}
         <div class="field"><label>${L.pr_city}</label><div class="chips">${Object.keys(CITY).map(c=>`<button type="button" class="chip" data-pcity="${c}" aria-pressed="${p.city===c}">${N(CITY[c])}</button>`).join('')}</div></div>
         <button type="submit" class="btn block">${L.pr_save}</button></form>`;
-    if(S.ptab===1)body=`<div class="card"><h2 style="font-size:16px">${L.st_channels}</h2>${Object.keys(L.st_ch).map(k=>`<label class="toggle"><span>${L.st_ch[k]}</span><input type="checkbox" data-nch="${k}" ${S.notif.ch[k]?'checked':''}><i></i></label>`).join('')}</div>
+    if(S.ptab===1)body=`<div class="card"><label class="toggle"><span style="font-weight:700">${L.st_demo}</span><input type="checkbox" id="demoT" ${S.demo?'checked':''}><i></i></label><div class="note">${L.st_demoTxt}</div></div><div class="card"><h2 style="font-size:16px">${L.st_channels}</h2>${Object.keys(L.st_ch).map(k=>`<label class="toggle"><span>${L.st_ch[k]}</span><input type="checkbox" data-nch="${k}" ${S.notif.ch[k]?'checked':''}><i></i></label>`).join('')}</div>
       <div class="card"><h2 style="font-size:16px">${L.st_types}</h2>${Object.keys(L.st_ty).map(k=>`<label class="toggle"><span>${L.st_ty[k]}</span><input type="checkbox" data-nty="${k}" ${S.notif.ty[k]?'checked':''}><i></i></label>`).join('')}</div>
       <div class="note">${L.st_lang}</div>`;
     if(S.ptab===2){
@@ -1123,7 +1124,7 @@ function bindExtra(r){
     on('[data-regrole]',b=>{S.profile.name=$('rg_name').value;S.profile.phone=$('rg_phone').value;S.regRole=b.dataset.regrole;render();});
     $('regForm').addEventListener('submit',e=>{e.preventDefault();const n=$('rg_name').value.trim(),p=$('rg_phone').value.trim();
       if(!n||p.replace(/\D/g,'').length<9){$('rgErr').hidden=false;return;}
-      S.profile.name=n;S.profile.phone=p;S.su.name=S.su.name||n;S.su.phone=S.su.phone||p;S.lastRole=S.regRole;S.otpFor=p;S.otpBack='register';go('otp');toast(L.au_codeSent);});
+      S.profile.name=n;S.profile.phone=p;S.su.name=S.su.name||n;S.su.phone=S.su.phone||p;S.lastRole=S.regRole;S.myRole=S.regRole;S.otpFor=p;S.otpBack='register';go('otp');toast(L.au_codeSent);});
   }
   if(r==='forgot'){
     $('fgForm').addEventListener('submit',e=>{e.preventDefault();const id=$('fg_id').value.trim();if(!id){$('fgErr').hidden=false;return;}S.fgId=id;
@@ -1154,6 +1155,7 @@ function bindExtra(r){
     on('[data-ptab]',b=>{S.ptab=Number(b.dataset.ptab);render();});
     on('[data-pcity]',b=>{S.profile.name=$('pr_name').value;S.profile.phone=$('pr_phone').value;S.profile.email=$('pr_email').value;S.profile.city=b.dataset.pcity;render();});
     const pf=$('prForm');if(pf)pf.addEventListener('submit',e=>{e.preventDefault();S.profile.name=$('pr_name').value.trim();S.profile.phone=$('pr_phone').value.trim();S.profile.email=$('pr_email').value.trim();render();toast(L.pr_saved);});
+    const dt=$('demoT');if(dt)dt.onchange=()=>{S.demo=dt.checked;if(!S.demo)S.myRole=S.lastRole;try{localStorage.setItem('hnahub-demo',S.demo?'1':'0');}catch(e){}render();toast(S.demo?L.st_demoOn:L.st_demoOff);};
     view.querySelectorAll('[data-nch]').forEach(c=>c.onchange=()=>{S.notif.ch[c.dataset.nch]=c.checked;toast(L.st_saved);});
     view.querySelectorAll('[data-nty]').forEach(c=>c.onchange=()=>{S.notif.ty[c.dataset.nty]=c.checked;toast(L.st_saved);});
     on('[data-payinv]',b=>{S.payInv=b.dataset.payinv;S.payWith=S.pm[0].id;go('invpay');window.scrollTo(0,0);});
@@ -1185,7 +1187,9 @@ function render(){
   let r=(location.hash||'').slice(1); if(!screens[r]) r='producer';
   if(!S.loggedIn&&!AUTH.includes(r)) r='login';
   if(S.loggedIn&&AUTH.includes(r)) r=S.lastRole||'producer';
+  if(!S.demo&&S.loggedIn&&r!=='chat'){S.lastRole=S.myRole;const rr=ROLE_OF[r];if(rr&&rr!=='auth'&&rr!==S.myRole&&!(S.myRole==='producer'&&r==='signup'))r=S.myRole;}
   document.body.dataset.auth=AUTH.includes(r)?'1':'';
+  document.body.dataset.demo=S.demo?'1':'0';
   if(!S.registered && ROLE_OF[r]==='producer') r='signup';
   if(S.registered && r==='signup') r='producer';
   const role=r==='chat'?S.chatRole:ROLE_OF[r];
