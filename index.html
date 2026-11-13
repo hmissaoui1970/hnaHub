@@ -314,6 +314,7 @@ input::placeholder{color:#86AE99}
 .tabs nav{box-shadow:0 10px 30px rgba(0,20,10,.5)}
 .toggle i::after{background:#9DBFAD}
 body[data-demo="0"] #rolesGroup{display:none}
+.ctitle{display:flex;flex-direction:column;gap:2px}.ctitle b{font-size:16px;font-weight:700}
 </style>
 
 <div class="app">
@@ -674,13 +675,13 @@ const screens={
     return `<div class="top" style="justify-content:flex-start">${backBtn('kellef')}<div><h1 style="font-size:20px">${L.annexTitle}</h1><div class="sub">${esc(N(s.name))} · ${N(CITY[S.city])}</div></div></div>
       <form id="annexForm" class="stack" novalidate>
         <div class="card"><div class="field"><label for="price">${L.price}</label><div class="row"><input id="price" type="text" inputmode="decimal" placeholder="${L.pricePh}"><span class="sub">${L.dh}</span></div></div></div>
-        <div class="card"><div style="font-size:13px;font-weight:600">${L.distance}</div><div class="grid2">
+        <div class="card"><div class="ctitle"><b>${L.distance}</b><span class="sub">${L.an_distSub}</span></div><div class="grid2">
           <div class="field"><label class="mini" for="dmin">${L.dmin}</label><input id="dmin" type="text" value="${L.km(3)}"></div>
           <div class="field"><label class="mini" for="dmax">${L.dmax}</label><input id="dmax" type="text" value="${L.km(10)}"></div></div></div>
-        <div class="card"><div class="grid2">
+        <div class="card"><div class="ctitle"><b>${L.an_qtyT}</b><span class="sub">${L.an_qtySub}</span></div><div class="grid2">
           <div class="field"><label for="qty">${L.qty}</label><input id="qty" type="number" inputmode="numeric" value="50"></div>
           <div class="field"><label for="alert">${L.alert}</label><input id="alert" type="number" inputmode="numeric" value="10"></div></div></div>
-        <div class="card"><div class="field"><label for="space">${L.space}</label><input id="space" type="text" value="${L.spaceVal}"></div>
+        <div class="card"><div class="ctitle"><b>${L.an_spaceT}</b><span class="sub">${L.an_spaceSub}</span></div><div class="field"><label for="space">${L.space}</label><input id="space" type="text" value="${L.spaceVal}"></div>
           <div class="chips" role="group" aria-label="${L.conds}">${L.cond.map((c,i)=>`<button type="button" class="chip" data-cond aria-pressed="${i<2}">${c}</button>`).join('')}</div></div>
         <p class="note" style="margin:0">${L.annexNote}</p>
         <p id="formErr" class="sub" style="color:var(--amber-ink);margin:0" hidden>${L.priceErr}</p>
@@ -870,7 +871,7 @@ Object.assign(T.ary,{
        ['كيفاش نتبع الستوك ديالي؟','ف "الستوك" كتشوف شحال باقي ف كل هَب، وكيوصلك تنبيه ملي يقل.'],
        ['علاش الهَب كيصوّر ملي كيسلّم الطلب؟','باش تكون حجة أن السلعة تسلّمات مزيانة.']],
   contact:'تواصل معانا', c_chat:'شات مع الدعم', c_call:'واتساب', c_mail:'صيفط إيميل', c_soon:'الرقم والإيميل غادي يتزادو قبل الإطلاق',
-  q_helpOrder:'عندي مشكل ف طلب', q_helpPay:'سؤال على الأداء', q_helpOther:'سؤال آخر', supportGreet:'السلام، أنا من فريق HnaHub. كيفاش نقدر نعاونك؟', st_demo:'وضع التجربة', st_demoTxt:'كيبيّن الأزرار ديال الأدوار الفوق باش تجرب كلشي. طفيه باش يبان التطبيق بحال الحقيقي: كل واحد كيشوف غير الصفحات ديالو.', st_demoOn:'وضع التجربة خدام', st_demoOff:'دابا التطبيق بحال الحقيقي'
+  q_helpOrder:'عندي مشكل ف طلب', q_helpPay:'سؤال على الأداء', q_helpOther:'سؤال آخر', supportGreet:'السلام، أنا من فريق HnaHub. كيفاش نقدر نعاونك؟', st_demo:'وضع التجربة', st_demoTxt:'كيبيّن الأزرار ديال الأدوار الفوق باش تجرب كلشي. طفيه باش يبان التطبيق بحال الحقيقي: كل واحد كيشوف غير الصفحات ديالو.', st_demoOn:'وضع التجربة خدام', st_demoOff:'دابا التطبيق بحال الحقيقي', an_distSub:'المسافة اللي بغيتي تكون بين الهَبات ديالك', an_qtyT:'العدد', an_qtySub:'شحال من وحدة غادي تخلي ف هاد الهَب، وفوقاش يوصلك تنبيه', an_spaceT:'المساحة', an_spaceSub:'شحال من بلاصة خاصك ف الهَب، والشروط ديال الخزين'
 });
 Object.assign(T.fr,{
   au_welcome:'Bienvenue sur HnaHub', au_sub:'Connectez-vous pour suivre vos commandes et votre stock', au_phone:'WhatsApp', au_email:'E-mail', au_pass:'Mot de passe',
@@ -906,7 +907,7 @@ Object.assign(T.fr,{
        ['Comment suivre mon stock ?','Dans « Stock », vous voyez ce qui reste dans chaque hub et recevez une alerte quand il baisse.'],
        ['Pourquoi le hub prend-il une photo à la remise ?','Comme preuve que la commande a été remise en bon état.']],
   contact:'Nous contacter', c_chat:'Chat avec le support', c_call:'WhatsApp', c_mail:'Envoyer un e-mail', c_soon:'Le numéro et l’e-mail seront ajoutés avant le lancement',
-  q_helpOrder:'Problème avec une commande', q_helpPay:'Question sur un paiement', q_helpOther:'Autre question', supportGreet:'Bonjour, ici l’équipe HnaHub. Comment pouvons-nous vous aider ?', st_demo:'Mode démo', st_demoTxt:'Affiche les boutons des rôles en haut pour tout tester. Désactivez-le pour voir l’app comme un vrai utilisateur : chacun ne voit que ses propres écrans.', st_demoOn:'Mode démo activé', st_demoOff:'L’app fonctionne maintenant comme la vraie'
+  q_helpOrder:'Problème avec une commande', q_helpPay:'Question sur un paiement', q_helpOther:'Autre question', supportGreet:'Bonjour, ici l’équipe HnaHub. Comment pouvons-nous vous aider ?', st_demo:'Mode démo', st_demoTxt:'Affiche les boutons des rôles en haut pour tout tester. Désactivez-le pour voir l’app comme un vrai utilisateur : chacun ne voit que ses propres écrans.', st_demoOn:'Mode démo activé', st_demoOff:'L’app fonctionne maintenant comme la vraie', an_distSub:'La distance souhaitée entre vos hubs', an_qtyT:'Quantité', an_qtySub:'Combien d’unités laisser dans ce hub, et à partir de quand être alerté', an_spaceT:'Espace', an_spaceSub:'La place nécessaire dans le hub et les conditions de stockage'
 });
 
 Object.assign(S,{
