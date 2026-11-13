@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 180" role="img" aria-label="HnaHub">
+<defs>
+<g id="sbox"><rect x="-9" y="-9" width="18" height="18" rx="2.5" fill="#F2C47E"/><rect x="-2.2" y="-9" width="4.4" height="6" fill="#C9711A"/><rect x="-9" y="-3.4" width="18" height="1.6" fill="#D9A55C"/></g>
+<g id="person"><circle cx="0" cy="-17" r="8" fill="#F4FAF6"/><path d="M-13 12 Q-13 -6 0 -6 Q13 -6 13 12 Z" fill="#F4FAF6"/></g>
+</defs>
+<!-- ground -->
+<rect x="6" y="156" width="348" height="3" rx="1.5" fill="#13684A"/>
+<!-- 1. hand giving the big carton -->
+<path d="M-4 150 L30 136 Q38 133 44 136 L50 140 L20 156 L-4 160 Z" fill="#F28C1B"/>
+<path d="M40 134 Q48 126 62 127 L96 128 Q103 129 102 135 Q101 140 94 140 L70 140 Q76 143 74 148 Q72 152 65 151 L46 149 Q38 147 36 141 Z" fill="#E7AE84"/>
+<path d="M70 140 L88 140" stroke="#C98D63" stroke-width="2" stroke-linecap="round"/>
+<path d="M66 146 L80 146" stroke="#C98D63" stroke-width="2" stroke-linecap="round"/>
+<!-- big carton -->
+<rect x="40" y="78" width="62" height="50" rx="3" fill="#E9B872"/>
+<rect x="40" y="78" width="62" height="8" fill="#D9A55C"/>
+<path d="M40 78 L26 66 L50 66 L58 78 Z" fill="#F2C47E"/>
+<path d="M102 78 L116 66 L92 66 L84 78 Z" fill="#F2C47E"/>
+<!-- small boxes inside, peeking out -->
+<use href="#sbox" x="54" y="72"/><use href="#sbox" x="71" y="68"/><use href="#sbox" x="88" y="72"/>
+<rect x="40" y="86" width="62" height="42" rx="3" fill="#E9B872"/>
+<rect x="66" y="86" width="10" height="16" fill="#C9711A"/>
+<path d="M48 116 h16 M48 121 h10" stroke="#C98D63" stroke-width="2" stroke-linecap="round"/>
+<!-- arrow to hub -->
+<path d="M118 108 L144 108" stroke="#F28C1B" stroke-width="4" stroke-linecap="round"/>
+<path d="M140 100 L150 108 L140 116" fill="none" stroke="#F28C1B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- 2. the hub (neighborhood shop) -->
+<rect x="160" y="78" width="72" height="78" fill="#F4FAF6"/>
+<rect x="156" y="62" width="80" height="18" rx="3" fill="#F28C1B"/>
+<path d="M156 80 q5 8 10 0 q5 8 10 0 q5 8 10 0 q5 8 10 0 q5 8 10 0 q5 8 10 0 q5 8 10 0 q5 8 10 0 Z" fill="#F28C1B"/>
+<path d="M166 62 v18 M186 62 v18 M206 62 v18 M226 62 v18" stroke="#FFD9A8" stroke-width="5"/>
+<rect x="183" y="40" width="26" height="20" rx="4" fill="#013624"/>
+<path d="M189 44 v12 M203 44 v12 M189 50 h14" stroke="#F28C1B" stroke-width="3" stroke-linecap="round"/>
+<!-- counter window with stored boxes -->
+<rect x="168" y="92" width="56" height="30" rx="3" fill="#013624"/>
+<rect x="168" y="114" width="56" height="4" fill="#F28C1B"/>
+<use href="#sbox" x="180" y="104" transform="scale(1)"/><use href="#sbox" x="198" y="104"/><use href="#sbox" x="214" y="106"/>
+<rect x="168" y="128" width="56" height="28" fill="#0B5C3E"/>
+<rect x="194" y="128" width="2" height="28" fill="#013624"/>
+<!-- 3. small boxes go out to customers -->
+<path d="M236 100 Q262 60 290 46" fill="none" stroke="#F28C1B" stroke-width="2.5" stroke-dasharray="5 5"/>
+<path d="M236 112 L290 104" fill="none" stroke="#F28C1B" stroke-width="2.5" stroke-dasharray="5 5"/>
+<path d="M236 124 Q262 150 290 160" fill="none" stroke="#F28C1B" stroke-width="2.5" stroke-dasharray="5 5"/>
+<use href="#sbox" x="262" y="66" transform="rotate(-12 262 66)"/>
+<use href="#sbox" x="264" y="108"/>
+<use href="#sbox" x="262" y="146" transform="rotate(12 262 146)"/>
+<!-- customers, each with one box -->
+<use href="#person" x="318" y="44"/><use href="#sbox" x="338" y="44"/>
+<use href="#person" x="318" y="104"/><use href="#sbox" x="338" y="104"/>
+<use href="#person" x="318" y="158" transform="translate(0 -8)"/><use href="#sbox" x="338" y="152"/>
+</svg>
