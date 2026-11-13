@@ -30,7 +30,7 @@ Open `index.html` in a browser, or enable GitHub Pages on the `main` branch.
 
 ## Demo login (full app)
 
-Phone number + SMS code: enter any Moroccan number, then the code **1234**. E-mail login accepts any address and password. "Créer un compte" and "Mot de passe oublié" also use the code 1234.
+WhatsApp number + code: enter any Moroccan number, then the code **1234**. E-mail login accepts any address and password. "Créer un compte" and "Mot de passe oublié" also use the code 1234.
 
 ## Logo
 
